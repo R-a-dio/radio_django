@@ -1,5 +1,4 @@
 Installation Requirements
 =========================
 
-You currently have to install xapian by yourself before installing this project. It will fail in a
-horrible way otherwise.
+You currently have to install xapian by yourself before installing this project. It will fail in a horrible way otherwise.

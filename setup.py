@@ -8,10 +8,11 @@ setup(
     description = ("The website framework used by R/a/dio"),
     license = "BSD",
     install_requires = [
-		"Django>=1.5",
-		"psycopg2",
-		"south",
-		"django-haystack",
-		"xapian-haystack",
+        "Django>=1.5",
+        "psycopg2",
+        "south",
+        "django-haystack",
+        "xapian-haystack",
+        "django-audit-log",
                         ],
 )
