@@ -2,3 +2,36 @@ Installation Requirements
 =========================
 
 You currently have to install xapian by yourself before installing this project. It will fail in a horrible way otherwise.
+
+
+Installation
+============
+
+You have to create your own `local_settings.py` in `/radio_django/radio_django/radio_django/local_settings.py` (Don't you love that long path.), it should contains the following template with your own relevant info filled in.
+
+
+    # Local Settings - Settings that are specific to a development environment (
+    # e.g. DATABASES, INTERNAL_IPS, INSTALLED_APPS, etc.)
+    
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': '',
+            'USER': '',
+            'PASSWORD': '',
+        }
+    }
+
+    HAYSTACK_CONNECTIONS = {
+    	'default': {
+    		'ENGINE': 'haystack.backends.xapian_backend.XapianEngine',
+    		'PATH': '',
+    	},
+    }
+
+    # INTERNAL_IPS = ('127.0.0.1',)
+
+    from custom_settings import INSTALLED_APPS
+    INSTALLED_APPS += (
+        #'debug_toolbar',
+    )
