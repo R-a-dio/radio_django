@@ -15,16 +15,16 @@ class Collection(models.Model):
     ACCEPTED = 1
     DECLINED = 2
     REPLACEMENT = 3
+    UNPLAYABLE = 4
     STATUS_CHOICES = (
         (PENDING, 'Pending'),
         (ACCEPTED, 'Accepted'),
         (DECLINED, 'Declinded'),
         (REPLACEMENT, 'Replacement'),
+        (UNPLAYABLE, 'Unplayable'),
     )
 
     track = models.ForeignKey(Track, unique=True)
-
-    usable = models.BooleanField(default=False, help_text="Is this track playable.")
 
     filename = models.TextField(blank=True, help_text="Original filename.")
 
@@ -41,6 +41,15 @@ class Collection(models.Model):
                                        help_text="Comment of why this was declined.")
 
 
+class Tracks(models.Model):
+    title = models.TextField(help_text="Title of the track.")
+    length = models.IntegerField(help_text="The length of the track.")
+    
+    tags = models.ManyToManyField(Tags, help_text="Relevant tags for this track.")
+
+    log = AuditLog()
+
+
 class Tags(models.Model):
     name = models.CharField(max_length=100)
 
@@ -52,6 +61,8 @@ class Artists(models.Model):
     
     tags = models.ManyToManyField(Tags, help_text="Relevant tags for this artist.")
 
+    track = models.ForeignKey(Tracks)
+
     log = AuditLog()
 
 
@@ -60,20 +71,7 @@ class Albums(models.Model):
 
     tags = models.ManyToManyField(Tags, help_text="Relevant tags for this album.")
     
-    log = AuditLog()
-
-
-class Tracks(models.Model):
-    title = models.TextField(help_text="Title of the track.")
-    length = models.IntegerField(help_text="The length of the track.")
-    
-    tags = models.ManyToManyField(Tags, help_text="Relevant tags for this track.")
-
-    artists = models.ManyToManyField(Artists, help_text="Artists of this track.")
-
-    albums = models.ManyToManyField(Albums, help_text="Albums this track is a part of.")
+    track = models.ForeignKey(Tracks)
 
     log = AuditLog()
-
-
 
