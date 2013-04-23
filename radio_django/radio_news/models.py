@@ -16,7 +16,7 @@ class News(models.Model):
 class NewsComment(models.Model):
     news_post = models.ForeignKey(News, help_text="The news post this was posted on.")
 
-    nickname = models.CharField(max_length=100, blank=True, help_text="The nickname posted under.")
+    name = models.CharField(max_length=100, blank=True, help_text="The nickname posted under.")
 
     text = models.TextField(help_text="Content of the comment, HTML is escaped.")
 

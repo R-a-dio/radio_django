@@ -23,7 +23,7 @@ class Migration(SchemaMigration):
         db.create_table(u'radio_news_newscomment', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('news_post', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['radio_news.News'])),
-            ('nickname', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
             ('text', self.gf('django.db.models.fields.TextField')()),
             ('mail', self.gf('django.db.models.fields.CharField')(max_length=200, blank=True)),
             ('poster', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True, blank=True)),
@@ -90,8 +90,8 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'NewsComment'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'mail': ('django.db.models.fields.CharField', [], {'max_length': '200', 'blank': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
             'news_post': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['radio_news.News']"}),
-            'nickname': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
             'poster': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']", 'null': 'True', 'blank': 'True'}),
             'text': ('django.db.models.fields.TextField', [], {}),
             'time': ('django.db.models.fields.DateTimeField', [], {})
