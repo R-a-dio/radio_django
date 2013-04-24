@@ -11,8 +11,9 @@ setup(
         "Django>=1.5",
         "psycopg2",
         "south",
-        "django-haystack",
-        "xapian-haystack",
         "django-audit-log",
+        "django-celery",
+        "celery-haystack",
+        "django-social-auth",
                         ],
 )
