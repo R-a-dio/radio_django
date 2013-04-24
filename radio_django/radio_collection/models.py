@@ -24,7 +24,7 @@ class Collection(models.Model):
         (UNPLAYABLE, 'Unplayable'),
     )
 
-    track = models.ForeignKey(Track, unique=True)
+    track = models.ForeignKey("Tracks", unique=True)
 
     filename = models.TextField(blank=True, help_text="Original filename.")
 
@@ -41,27 +41,33 @@ class Collection(models.Model):
                                        help_text="Comment of why this was declined.")
 
 
-class Tracks(models.Model):
-    title = models.TextField(help_text="Title of the track.")
-    length = models.IntegerField(help_text="The length of the track.")
-    
-    tags = models.ManyToManyField(Tags, help_text="Relevant tags for this track.")
-
-    log = AuditLog()
-
-
 class Tags(models.Model):
     name = models.CharField(max_length=100)
 
     log = AuditLog()
 
 
+class Tracks(models.Model):
+    title = models.TextField(help_text="Title of the track.")
+    length = models.IntegerField(help_text="The length of the track.")
+    
+    tags = models.ManyToManyField(Tags, null=True, blank=True,
+                                  help_text="Relevant tags for this track.")
+
+    artist = models.ForeignKey("Artists", null=True, blank=True)
+
+    album = models.ForeignKey("Albums", null=True, blank=True)
+
+    log = AuditLog()
+
+    # Legacy fields underneath
+    legacy_tags = models.TextField(help_text="Legacy tags that have not been split yet.")
+
 class Artists(models.Model):
     name = models.TextField(help_text="Name of the artist.")
     
-    tags = models.ManyToManyField(Tags, help_text="Relevant tags for this artist.")
-
-    track = models.ForeignKey(Tracks)
+    tags = models.ManyToManyField(Tags, null=True, blank=True,
+                                  help_text="Relevant tags for this artist.")
 
     log = AuditLog()
 
@@ -69,9 +75,8 @@ class Artists(models.Model):
 class Albums(models.Model):
     name = models.TextField(help_text="Name of this album.")
 
-    tags = models.ManyToManyField(Tags, help_text="Relevant tags for this album.")
+    tags = models.ManyToManyField(Tags, null=True, blank=True,
+                                  help_text="Relevant tags for this album.")
     
-    track = models.ForeignKey(Tracks)
-
     log = AuditLog()
 

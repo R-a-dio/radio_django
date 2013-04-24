@@ -6,10 +6,13 @@
 
 #GRAPPELLI_ADMIN_TITLE = ''
 
-#import djcelery
-#djcelery.setup_loader()
-#CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
-#CELERYD_PREFETCH_MULTIPLIER = 1
+import djcelery
+djcelery.setup_loader()
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+CELERYD_PREFETCH_MULTIPLIER = 1
+
+# Setup a queue processor.
+HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 
 
 import os

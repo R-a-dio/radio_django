@@ -1,0 +1,3 @@
+{{ object.title }} {% for tag in object.tags_set %} {{ tag.name }} {% endfor %}
+{{ object.artists.name }} {% for tag in object.artists.tags_set %} {{ tag.name }} {% endfor %}
+{{ object.albums.name }} {% for tag in object.albums.tags_set %} {{ tag.name }} {% endfor %}

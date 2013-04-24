@@ -23,6 +23,11 @@ TEMPLATE_DIRS += (
     #'',
 )
 
+from settings import TEMPLATE_LOADERS
+TEMPLATE_LOADERS += (
+    'django.template.loaders.app_directories.Loader',
+)
+
 from settings import INSTALLED_APPS
 INSTALLED_APPS += (
     #'grappelli',
@@ -31,8 +36,13 @@ INSTALLED_APPS += (
     #'djcelery',
     'south',
     'haystack',
+    'djcelery',
+    'celery_haystack',
     'radio_news',
     'radio_django',
+    'radio_stream',
+    'radio_collection',
+    'radio_users',
 )
 
 from project_settings import *
