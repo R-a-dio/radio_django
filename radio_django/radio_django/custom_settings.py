@@ -43,6 +43,7 @@ INSTALLED_APPS += (
     'radio_stream',
     'radio_collection',
     'radio_users',
+    'radio_web',
 )
 
 from project_settings import *

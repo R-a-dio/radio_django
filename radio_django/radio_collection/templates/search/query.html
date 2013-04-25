@@ -1,0 +1,44 @@
+{% extends "radio_base.html" %}
+
+{% load time_extras %}
+
+{% block content %}
+    <table class="zebra-striped bordered-table condensed-table" id="search-results">
+    {% if query %}
+        <thead>
+            <tr>
+                <th class="songid">ID</th>
+                <th class="info">Artist - Title</th>
+                <th class="last">Last played</th>
+                <th class="last">Last requested</th>
+                <th class="request">Request</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in page.object_list %}
+            <tr>
+                <td>{{ result.id }}</td>
+                <td>{{ result.metadata }}</td>
+                <td>{{ result.last_played|search_time_format }}</td>
+                <td>{{ result.last_requested|search_time_format }}</td>
+                <td>
+                    <form method="POST" action="/request/" name="requestform">
+                        <input type="hidden" value="{{ result.id }}" name="songid">
+                        <input class="btn info" type="submit" value="Request">
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        {% if page.has_previous or page.has_next %}
+            {% if page.has_previous %}
+            <a href="?q={{ query }}&page={{ page.previous_page_number }}">Previous</a>
+            {% endif %}
+            |
+            {% if page.has_next %}
+            <a href="?q={{ query }}&page{{ page.next_page_number }}">Next</a>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+    </table>
+{% endblock content %}

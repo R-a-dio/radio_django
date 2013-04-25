@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html><head>
+    <title>{% block title %}R/a/dio{% endblock title %}</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="We cater to all of your Anime/Japan-related music tastes. Just point your favorite music player at our stream link." />
+    <meta name="keywords" content="japan,music,anime,radio,r/a/dio,r-a-dio,stream,anison,日本,アニソン" />
+</head>
+<body>
+    {% block topbar %}
+        <div class="topbar">
+            <div class="topbar-inner">
+                <div class="container">
+                    <h3><a href="#">R/a/dio</a></h3>
+                    <ul class="nav">
+                        <li class="go active" id="menu_home">
+                            <a href="/">Home</a>
+                        </li>
+                        <li class="go" id="menu_news">
+                            <a href="/news/">News</a>
+                        </li>
+                        <li class="go" id="menu_last_played">
+                            <a href="/lastplayed/">Last Played</a>
+                        </li>
+                        <li class="go" id="menu_queue">
+                            <a href="/queue/">Queue</a>
+                        </li>
+                        <li class="go" id="menu_favourites">
+                            <a href="/favourites/">Favourites</a>
+                        </li>
+                        <li class="go" id="menu_submit">
+                            <a href="/submit/">Submit track</a>
+                        </li>
+                        <li class="go" id="menu_staff">
+                            <a href="/staff/">Staff</a>
+                        </li>
+                        <li class="go" id="menu_irc">
+                            <a href="/irc/">IRC</a>
+                        </li>
+                        <li class="go" id="menu_stats">
+                            <a href="/stats/">Stats</a>
+                        </li>
+                        <li class="go" id="menu_search">
+                            <a href="/search/">Request</a>
+                        </li>
+                    </ul>
+                    <form id="search" class="pull-right" action="/search/query/">
+                        <input class="search" type="text" name="query" autocomplete="off" placeholder="Search library">
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endblock topbar %}
+    <div class="container page" id="{% block page_name %}home_page{% endblock page_name %}">
+        {% block content %}
+        {% endblock content %}
+    </div>
+</body>

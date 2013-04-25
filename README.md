@@ -20,6 +20,7 @@ You have to create your own `local_settings.py` in `/radio_django/radio_django/r
     # Local Settings - Settings that are specific to a development environment (
     # e.g. DATABASES, INTERNAL_IPS, INSTALLED_APPS, etc.)
     
+    # The database to use, see django database setup for more info.
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -29,12 +30,16 @@ You have to create your own `local_settings.py` in `/radio_django/radio_django/r
         }
     }
 
+    # Extra settings for haystack searching. See haystack docs (version 2.0+).
     HAYSTACK_CONNECTIONS = {
     	'default': {
     		'ENGINE': 'haystack.backends.xapian_backend.XapianEngine',
     		'PATH': '',
     	},
     }
+    
+    # The broker URL used by celery.
+    BROKER_URL = ''
 
     # INTERNAL_IPS = ('127.0.0.1',)
 
@@ -42,3 +47,9 @@ You have to create your own `local_settings.py` in `/radio_django/radio_django/r
     INSTALLED_APPS += (
         #'debug_toolbar',
     )
+
+
+Celery
+------
+
+Celery requires a message broker to be installed. We suggest using RabbitMQ, instructions can be found [here](http://docs.celeryproject.org/en/latest/getting-started/brokers/rabbitmq.html) and on their own website. Don't forget to set the `BROKER_URL` in `local_settings.py`.
