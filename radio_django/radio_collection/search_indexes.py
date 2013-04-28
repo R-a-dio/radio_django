@@ -10,17 +10,17 @@ class TrackIndex(CelerySearchIndex, indexes.Indexable):
     def get_model(self):
         return Tracks
 
-def reindex_album(sender, instance, **kwargs):
-    index = kwargs.get('track_index', TrackIndex())
-    for track in instance.tracks_set.all():
-        index.update_object(track)
-signals.post_save.connect(reindex_album, sender=Albums)
 
-def reindex_artist(sender, instance, **kwargs):
+def reindex_related(sender, instance, **kwargs):
     index = kwargs.get('track_index', TrackIndex())
     for track in instance.tracks_set.all():
         index.update_object(track)
-signals.post_save.connect(reindex_artist, sender=Artists)
+
+# Register them to all our related senders
+signals.post_save.connect(reindex_related, sender=Tags)
+signals.post_save.connect(reindex_related, sender=Artists)
+signals.post_save.connect(reindex_related, sender=Albums)
+
 
 # These are the m2m relationship signals, these are.. more work
 def m2m_artist(sender, instance, action, **kwargs):
@@ -31,10 +31,10 @@ def m2m_artist(sender, instance, action, **kwargs):
         # Tags are changed. thus instance = Tags
         index = TrackIndex()
         for obj in instance.artists_set.all():
-            reindex_artist(sender, obj, track_index=index)
+            reindex_related(sender, obj, track_index=index)
     else:
         # Artist side changed it. thus instance = Artists
-        reindex_artist(sender, instance)
+        reindex_related(sender, instance)
 
 def m2m_album(sender, instance, action, reverse, **kwargs):
     if not action.startswith('post_'):
@@ -44,10 +44,10 @@ def m2m_album(sender, instance, action, reverse, **kwargs):
         # Tags are changed, thus instance = Tags
         index = TrackIndex()
         for obj in instance.albums_set.all():
-            reindex_album(sender, obj, track_index=index)
+            reindex_related(sender, obj, track_index=index)
     else:
         # Artist side changed it, thus instance = Albums
-        reindex_album(sender, instance)
+        reindex_related(sender, instance)
 
 def m2m_track(sender, instance, action, reverse, **kwargs):
     if not action.startswith('post_'):
