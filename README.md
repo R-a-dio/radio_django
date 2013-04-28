@@ -3,12 +3,23 @@ Installation Requirements
 
 Before we begin, it is highly recommended you install inside a `virtualenv`. If you don't want to have too much trouble installing `xapian` mentioned below, we suggest to use `virtualenv --system-site-packages` since the `xapian-bindings` will install into the system site packages by default.
 
+The following list of programs should be installed after running the `setup.py` included.
+
+Xapian
+------
 You currently have to install `xapian` by yourself before installing this project. This includes all the requirements to use it from Python. The following needs to be installed.
 
 `xapian-core`, `xapian-bindings` (at least Python ones), `xapian-haystack` from github and `django-haystack` from github. We are using the latest versions of the last two that don't have a pip package yet. To install them you can issue the following two commands:
 
 `pip install -e git+https://github.com/toastdriven/django-haystack.git@master#egg=django-haystack`
 `pip install -e git+https://github.com/notanumber/xapian-haystack.git@master#egg=xapian-haystack`
+
+Django-Piston
+-------------
+
+Due to our usage of Django 1.5 we need the current master of django-piston, this can be installed by running the following command:
+
+`pip install -e git+https://github.com/brandsExclusive/django-piston.git@master#egg=django-piston`
 
 
 Installation
