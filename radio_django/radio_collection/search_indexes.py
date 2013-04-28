@@ -14,7 +14,7 @@ class TrackIndex(CelerySearchIndex, indexes.Indexable):
 def reindex_related(sender, instance, **kwargs):
     index = kwargs.get('track_index', TrackIndex())
     for track in instance.tracks_set.all():
-        index.update_object(track)
+        index.enqueue_save(track)
 
 # Register them to all our related senders
 signals.post_save.connect(reindex_related, sender=Tags)
@@ -57,10 +57,10 @@ def m2m_track(sender, instance, action, reverse, **kwargs):
     if reverse:
         # Tags are changed, thus instance = Tags
         for obj in instance.tracks_set.all():
-            index.update_object(obj)
+            index.enqueue_save(obj)
     else:
         # Track side changed it, thus instance = Tracks
-        index.update_object(instance)
+        index.enqueue_save(instance)
 
 signals.m2m_changed.connect(m2m_artist, sender=Artists.tags.through)
 signals.m2m_changed.connect(m2m_album, sender=Albums.tags.through)
