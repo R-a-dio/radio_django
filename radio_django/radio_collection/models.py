@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 from audit_log.models.managers import AuditLog
 
 
@@ -79,4 +80,21 @@ class Albums(models.Model):
                                   help_text="Relevant tags for this album.")
     
     log = AuditLog()
+
+
+class Played(models.Model):
+    time = models.DateTimeField(null=True, blank=True, db_index=True,
+                                help_text="Time of playback start.")
+    track = models.ForeignKey(Tracks, help_text="The track played.")
+
+    user = models.ForeignKey(User, help_text="The user responsible for this playback.")
+
+
+class Requests(models.Model):
+    time = models.DateTimeField(db_index=True, help_text="When did this get requested.")
+
+    track = models.ForeignKey(Tracks, help_text="The track requested.")
+
+    identifier = models.CharField(max_length=150, db_index=True,
+                                  help_text="Identifier of this request, either an IP or Hostname.")
 

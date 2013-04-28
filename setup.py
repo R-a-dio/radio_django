@@ -16,5 +16,6 @@ setup(
         "celery-haystack",
         "django-social-auth",
         "mutagen",
+        "oauth2",
                         ],
 )

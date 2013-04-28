@@ -19,7 +19,7 @@ class RadioSearchForm(SearchForm):
 
 class RadioSearchView(SearchView):
     def extra_context(self):
-        return {"latest_additions": Tracks.objects.all()}
+        return {"latest_additions": Tracks.objects.all().order_by('-id')[:RESULTS_PER_PAGE]}
 
 
 """

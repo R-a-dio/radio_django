@@ -4,7 +4,6 @@
 
 {% block content %}
     <table class="zebra-striped bordered-table condensed-table" id="search-results">
-    {% if query %}
         <thead>
             <tr>
                 <th class="songid">ID</th>
@@ -15,15 +14,16 @@
             </tr>
         </thead>
         <tbody>
+    {% if query %}
             {% for result in page.object_list %}
             <tr>
-                <td>{{ result.id }}</td>
-                <td>{{ result.metadata }}</td>
-                <td>{{ result.last_played|search_time_format }}</td>
-                <td>{{ result.last_requested|search_time_format }}</td>
+                <td>{{ result.object.id }}</td>
+                <td>{{ result.object.artist.name }} - <b>{{ result.object.title }}</b></td>
+                <td>{{ result.object.last_played|search_time_format }}</td>
+                <td>{{ result.object.last_requested|search_time_format }}</td>
                 <td>
                     <form method="POST" action="/request/" name="requestform">
-                        <input type="hidden" value="{{ result.id }}" name="songid">
+                        <input type="hidden" value="{{ result.object.id }}" name="songid">
                         <input class="btn info" type="submit" value="Request">
                     </form>
                 </td>
@@ -39,6 +39,20 @@
             <a href="?q={{ query }}&page{{ page.next_page_number }}">Next</a>
             {% endif %}
         {% endif %}
+    {% else %}
+        {% for object in latest_additions %}
+        <tr>
+            <td>{{ object.id }}</td>
+            <td>{{ object.artist.name }} - <b>{{ object.title }}</b></td>
+            <td>{{ object.last_played|search_time_format }}</td>
+            <td>
+                <form method="POST" action="/request/" name="requestform">
+                    <input type="hidden" value="{{ object.id }}" name="songid">
+                    <input class="btn info" type="submit" value="Request">
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
     {% endif %}
     </table>
 {% endblock content %}
