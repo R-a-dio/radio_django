@@ -4,6 +4,7 @@ register = Library()
 
 @register.filter
 def search_time_format(value):
-    if value is None:
+    try:
+        return value.strftime('%a %d %b, %H:%M')
+    except AttributeError:
         return u'Never'
-    return value.strftime('%a %d %b, %H:%M')
