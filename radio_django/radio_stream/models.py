@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from radio_users.models import Nicknames
+import hashlib
 
 
 class Songs(models.Model):
@@ -11,10 +12,18 @@ class Songs(models.Model):
 
     metadata = models.TextField(help_text="The actual metadata send by the DJ")
 
-    songid = models.ForeignKey('self')  
+    songid = models.ForeignKey('self', null=True, blank=True)  
+
+    length = models.IntegerField(help_text="The length of this song.", null=True, blank=True)
 
     def __unicode__(self):
         return self.hash
+
+    @staticmethod
+    def create_hash(metadata):
+        if (isinstance(metadata, unicode)):
+            metadata = metadata.encode('utf-8', 'replace').lower().strip()
+        return hashlib.sha1(metadata).hexdigest()
 
 
 class Faves(models.Model):
