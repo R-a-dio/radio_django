@@ -4,7 +4,7 @@ from radio_stream.models import Songs
 
 
 class SongIndex(CelerySearchIndex, indexes.Indexable):
-    text = indexes.CharField(document=True, model_attr='meta')
+    text = indexes.CharField(document=True, model_attr='metadata')
 
     def get_model(self):
         return Songs
