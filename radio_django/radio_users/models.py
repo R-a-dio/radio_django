@@ -18,7 +18,7 @@ class Djs(models.Model):
     priority = models.IntegerField(default=0,
                     help_text="The number we sort by on the staff page, higher means closer to the top.")
 
-    user = models.ForeignKey(User)
+    user = models.OneToOneField(User, related_name='dj_account')
 
     log = AuditLog()
 

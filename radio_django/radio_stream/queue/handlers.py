@@ -1,110 +1,227 @@
 from django.core.cache import cache
-from piston.handler import BaseHandler
-from piston.utils import rc, require_mime
+from django.conf.urls import url
+from tastypie.resources import ModelResource
+from tastypie.authorization import DjangoAuthorization
+from tastypie.authentication import BasicAuthentication
+from tastypie.fields import ForeignKey
+from radio_django.api import container
 from radio_stream.models import Queue, Songs
+from radio_stream.handlers import SongResource
+from radio_stream.queue.serializer import QueueSerializer
 from radio_users.models import Djs
+from copy import copy
+import collections
+import datetime
+
+# Datetimes are formatted according to http://www.ecma-international.org/ecma-262/5.1/#sec-15.9.1.15
+
+class WriteDjangoAuthorization(DjangoAuthorization):
+    def read_list(self, object_list, bundle):
+        return object_list
+    
+    def read_detail(self, object_list, bundle):
+        return True
 
 
-class QueueHandler(BaseHandler):
-    allowed_methods = ('GET', 'POST', 'PUT', 'DELETE')
-    model = Queue
+class QueueResource(ModelResource):
+    song = ForeignKey(SongResource, 'song',
+                      full=True, null=True, blank=True)
 
-    def read(self, request, dj=None):
-        if dj is None:
-            # Get the DJ from our memcache instead
-            dj = cache.get('radio_current_dj')
-        
-        if dj is None:
-            # We couldn't find a DJ to use.
-            return rc.NOT_FOUND
+    class Meta:
+        queryset = Queue.objects.all().order_by('time')
+        resource_name = "queue"
+        allowed_methods = ['get', 'post', 'put', 'delete']
+        authorization = WriteDjangoAuthorization()
+        authentication = BasicAuthentication()
+        include_resource_uri = False
+        serializer = QueueSerializer()
+
+    def prepend_urls(self):
+        return [
+            url(r"^(?P<resource_name>%s)/(?P<user>\d+)/$" % self._meta.resource_name,
+                self.wrap_view('get_queue_list'), name="api_queue_list"),
+        ]
+    
+    def create_error_response(self, request, err_msg, err_number, status=500, **kwargs):
+        """
+        Returns a generic bundle that is populated with information given.
+
+        The standard response looks similar to this:
+            `{"error": {"msg": "My error message", "id": -1}}`
+
+        And will by default send a HTTP status code of 500.
+        """
+        response = self.create_response(request, {"error": dict(msg=err_msg, id=err_number, **kwargs)})
+        response.status_code = status
+        return response
+
+    def get_list(self, request, **kwargs):
+        user = cache.get('radio_current_dj')
+        return self.get_queue(request, user=user, **kwargs)
+
+    def get_queue_list(self, request, user, **kwargs):
+        """
+        Returns the queue of the given DJ id, if no DJ with the id is found an error will be raised.
+
+        The errors that can be raised are the following:
+            (-1, Invalid DJ found): Indicates that there is no current DJ set in the system.
+            (-2, DJ found is not an integer): Indicates that the user input, or the system returned
+                                              something that isn't an integer.
+            (-3, No DJ with that ID found): Indicates that no DJ exists with the ID given.
+        """
+        base_bundle = self.build_bundle(request=request)
+        objects = self.obj_get_list(bundle=base_bundle)
+
+        if user is None:
+            return self.create_error_response(request, u"Invalid DJ found", -1)
 
         try:
-            dj = int(dj)
+            dj_id = int(user)
         except TypeError:
-            return rc.BAD_REQUEST
-        
+            return self.create_error_response(request, u"DJ found is not an integer.", -2)
+
         try:
-            dj_obj = Djs.objects.get(pk=dj)
+            Djs.objects.get(pk=dj_id)
         except Djs.DoesNotExist:
-            return rc.BAD_REQUEST
+            return self.create_error_response(request, u"No DJ with that ID found.", -3)
 
-        return Queue.objects.all().filter(user=dj_obj)
+        objects = objects.filter(user__id=dj_id)
         
-    @require_mime('json')
-    def create(self, request):
-        user = request.user
-        if request.content_type == 'application/json':
-            data = request.data
-            # The json is of format {'current': {'length': n, 'position': n}, 'queue': [<tracks>, ...]}
-            # <tracks> = {'metadata': 'a string of metadata', 'length': n}
-            # both length and position should be integers in seconds
-            current_time = datetime.datetime.now()
-            if u'current' in data:
-                # Parse our offset for the data.
-                offset = int(data['length']) - int(data['position'])
-                current_time += datetime.timedelta(seconds=offset)
+        # Add pagination after filtering!
+        paginator = self._meta.paginator_class(request.GET, objects,
+                                               resource_uri=self.get_resource_uri(),
+                                               limit=self._meta.limit,
+                                               max_limit=self._meta.max_limit,
+                                               collection_name=self._meta.collection_name)
+        to_be_serialized = paginator.page()
 
-            if u'queue' not in data:
-                # No queue send at all, bad request
-                return rc.BAD_REQUEST
+
+        bundles = []
+
+        for obj in to_be_serialized[self._meta.collection_name]:
+            bundle = self.build_bundle(obj=obj, request=request)
+            bundles.append(self.full_dehydrate(bundle, for_list=True))
+
+        to_be_serialized[self._meta.collection_name] = bundles
+        to_be_serialized = self.alter_list_data_to_serialize(request, to_be_serialized)
+        return self.create_response(request, to_be_serialized)
+
+    def post_list(self, request, **kwargs):
+        """
+        Called whenever someone does a post to `/api/v/queue/`
+        
+        """
+        deserialized = self.deserialize(request, request.body,
+                                        format=request.META.get('content_type', 'application/json'))
+        deserialized = self.alter_deserialized_detail_data(request, deserialized)
+        
+        result = self.validate_queue(request, deserialized)
+        if result is None:
+            return super(QueueResource, self).post_list(request, **kwargs)
+        return result
+
+    def validate_queue(self, request, data):
+        """
+        Responsible for validating the input from the user, the input is an already
+        deserialized python object. Validation should either return None or a response
+        to return to the user.
+        """
+        # First lets make sure the user has a DJ account
+        try:
+            dj = request.user.dj_account
+        except Djs.DoesNotExist:
+            return self.create_error_response(request, u"You don't have a DJ account.", -1)
+
+        # Validate the 'current' entry if it exists
+        if 'current' in data:
+            # Both entries should be integers
+            try:
+                int(data['current']['position'])
+                int(data['current']['length'])
+            except TypeError:
+                return self.create_error_response(request,
+                            u"Value of `position` or `length` is not an integer.", -2)
+
+        if 'queue' not in data:
+            return self.create_error_response(request,
+                            u"Empty queue received, to delete a queue use DELETE.", -3)
+
+        if not isinstance(data['queue'], list):
+            return self.create_error_response(request,
+                            u"Queue should've been a list type.", -7)
+
+        for song in data['queue']:
+            # Do we have any of the keys at all~
+            if not "metadata" in song or not "length" in song:
+                return self.create_error_response(request,
+                            u"Missing one of the required fields `metadata` and `length`.", -6)
+
+            # check if length is an integer or not
+            try:
+                int(song['length'])
+            except TypeError:
+                return self.create_error_response(request,
+                            u"`length` value is not an integer.", -4)
+            # Make sure the metadata is a string type.
+            if not isinstance(song['metadata'], (unicode, str, bytes)):
+                return self.create_error_response(request,
+                            u"`metadata` value is not an integer.", -5)
+
+
+    def obj_create(self, bundle, **kwargs):
+        data = bundle.data
+        
+        dj = bundle.request.user.dj_account
+
+        # Check if we have an offset for the queue start
+        current_time = datetime.datetime.now()
+        if 'current' in data:
+            position = int(data['current']['position'])
+            length = int(data['current']['length'])
             
-            queue = data['queue']
+            current_time += datetime.timedelta(seconds=length - position)
 
-            # validation
-            if not isinstance(queue, list):
-                # The queue received isn't a list? wat
-                return rc.BAD_REQUEST
+
+        queue = data['queue']
+
+        song_hashes = []
+        for i, song in enumerate(queue[:]):
             
-            song_hashes = []
-            for song in queue:
-                # validation
-                if not u'metadata' in song or not u'length' in song:
-                    # Missing required field on song dict
-                    return rc.BAD_REQUEST
-                # make sure we got an actual integer and convert it so we don't have to worry later
-                song['length'] = int(song['length'])
+            metadata = song['metadata']
 
-                song_hash = Songs.create_hash(song['metadata'])
-                
-                song_hashes.append(song_hash)
+            # Convert all our dicts to namedtuples
+            queue[i] = SongTuple(length=int(song['length']),
+                                 metadata=metadata)
 
-            # From this point forward we've validated all the data received already, we can stop wondering
-            # about us having correct data or not.
+            # Create a hash and append to our list
+            song_hashes.append(Songs.create_hash(metadata))
 
-            # We get all songs that already exist in the database
-            song_objs = Songs.objects.filter(hash__in=song_hashes)
-            # Create a dict mapping for faster lookup times
-            song_obj_hashes = {obj.hash: obj for obj in song_objs}
+        song_objects = Songs.objects.filter(hash__in=song_hashes)
 
-            # The list of final song objects, all ready to relate to
-            songs = []
-            for song, song_hash in zip(queue, song_hashes):
-                obj = song_obj_hashes.get(song_hash, None)
-                if obj is None:
-                    # We have no song entry yet, create one. This is done one-by-one.
-                    obj = Songs.objects.create(meta=song['metadata'],
-                                               length=song['length'],
-                                               hash=song_hash)
-                songs.append(obj)
+        song_obj_hashes = {obj.hash: obj for obj in song_objects}
 
-            # Delete old objects
-            Queue.objects.filter(user=user).delete()
-            
-            queue_objs = []
-            for obj in songs:
-                # Make sure we increase our estimated queue time
-                current_time += datetime.timedelta(seconds=obj.length)
-                # and at a Queue object to our list of objects
-                queue_objs.append(Queue(song=obj, user=user, time=copy(current_time)))
+        songs = []
+        for song, song_hash in zip(queue, song_hashes):
+            obj = song_obj_hashes.get(song_hash, None)
+            if obj is None:
+                obj = Songs.objects.create(metadata=song.metadata,
+                                           length=song.length,
+                                           hash=song_hash)
+                song_obj_hashes[obj.hash] = obj
 
-            # Create the list of objects, and done we are~
-            Queue.objects.bulk_create(queue_objs)
+            songs.append(obj)
 
-            return rc.CREATED
-        else:
-            # We have no idea what that content type is
-            return rc.BAD_REQUEST
+        Queue.objects.filter(user=dj.user).delete()
 
-    @require_mime('json')
-    def update(self, request):
-        pass
+        queue_objects = []
+        for obj in songs:
+            queue_objects.append(
+                    Queue(song=obj, user=dj, time=copy(current_time))
+            )
+            current_time += datetime.timedelta(seconds=obj.length)
+
+        Queue.objects.bulk_create(queue_objects)
+
+SongTuple = collections.namedtuple('SongTuple', ('length', 'metadata'))
+
+container.register(QueueResource())

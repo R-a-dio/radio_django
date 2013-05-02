@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from radio_users.models import Nicknames
+from radio_users.models import Nicknames, Djs
 import hashlib
 
 
@@ -48,7 +48,7 @@ class Plays(models.Model):
 
 
 class Queue(models.Model):
-    user = models.ForeignKey(User, help_text="The user this is queued for.")
+    user = models.ForeignKey(Djs, help_text="The user this is queued for.")
 
     song = models.ForeignKey(Songs, help_text="The song queued.")
 
