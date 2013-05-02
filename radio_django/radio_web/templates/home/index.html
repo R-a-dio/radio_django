@@ -1,0 +1,14 @@
+{% extends "radio_base.html" %}
+
+{% comment %}
+    Receives the following special variables:
+        lastplayed: The last 10 `Played` entries, limit it yourself for smaller amounts
+        queue: The 10 top `Queue`d entries for the active DJ, limit same as lastplayed
+        current: A `Songs` object of the currently playing song. Can be None if stream is down.
+        current_dj: A `Djs` object of the currently live DJ.
+        news: The 3 latest `News` objects.
+{% endcomment %}
+
+{% block content %}
+    Empty
+{% endblock content %}

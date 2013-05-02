@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import User
 from radio_users.models import Nicknames, Djs
 import hashlib
 
@@ -38,13 +37,13 @@ class Faves(models.Model):
         unique_together = ('user', 'song')
 
 
-class Plays(models.Model):
+class Played(models.Model):
     time = models.DateTimeField(null=True, blank=True, db_index=True,
                                 help_text="The time of playing.")
 
     song = models.ForeignKey(Songs, help_text="The song played.")
 
-    user = models.ForeignKey(User, help_text="The user that played this on stream.")
+    user = models.ForeignKey(Djs, help_text="The user that played this on stream.")
 
 
 class Queue(models.Model):

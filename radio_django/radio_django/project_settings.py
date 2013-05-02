@@ -13,6 +13,9 @@ SUBMISSION_MAX_SIZE_MAPPING = {
     mutagen.mp3.MP3: 15728640,
     mutagen.oggvorbis.OggVorbis: 15728640,
 }
+# The amount of results on a common page
+# The amount of search results can't be edited right now
+RESULTS_PER_PAGE = 20
 
 SUBMISSION_DELAY = datetime.timedelta(hours=2)
 SUBMISSION_FILE_LOCATION = "/tmp"
