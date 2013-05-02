@@ -38,12 +38,13 @@ INSTALLED_APPS += (
     'haystack',
     'djcelery',
     'celery_haystack',
+    'tastypie',
     'radio_news',
-    'radio_django',
     'radio_stream',
     'radio_collection',
     'radio_users',
     'radio_web',
+    'radio_django',
 )
 
 from project_settings import *

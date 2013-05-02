@@ -3,12 +3,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 admin.autodiscover()
 
-# TEMP
-from radio_collection.search.views import SearchHandler
-from piston.resource import Resource
-handler = Resource(SearchHandler)
 
-# TEMP
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'radio_web.views.home', name='home'),
@@ -29,7 +24,15 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 )
 
-# API root urls are defined here.
+from radio_django.api import container
+
 urlpatterns += patterns('',
-    url(r'^api/search/$', include('radio_collection.search.api_urls')),
+    url(r'^api/', include(container.urls))
 )
+
+# API root urls are defined here.
+#urlpatterns += patterns('',
+#    url(r'^api/tracks/search/', include('radio_collection.search.api_urls')),
+#    url(r'^api/request/', include('radio_collection.request.api_urls')),
+#    url(r'^api/queue/', include('radio_stream.queue.api_urls')),
+#)
