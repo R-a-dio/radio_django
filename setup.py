@@ -14,8 +14,7 @@ setup(
         "django-audit-log",
         "django-celery",
         "celery-haystack",
-        "django-social-auth",
         "mutagen",
-        "oauth2",
+        "django-tastypie",
                         ],
 )
