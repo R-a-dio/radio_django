@@ -1,0 +1,28 @@
+<request>
+    <current type='hash'>
+        <length type="integer">120</length>
+        <position type="integer">60</position>
+    </current>
+    <queue type='list'>
+        <song type='hash'>
+            <metadata>welcome to the space show</metadata>
+            <length type="integer">180</length>
+        </song>
+        <song type='hash'>
+            <metadata>some extra testing data</metadata>
+            <length type="integer">180</length>
+        </song>
+        <song type='hash'>
+            <metadata>test duplicate tracks in queue</metadata>
+            <length type="integer">240</length>
+        </song>
+        <song type='hash'>
+            <metadata>Magic Artist - Magic World</metadata>
+            <length type="integer">300</length>
+        </song>
+        <song type='hash'>
+            <metadata>test duplicate tracks in queue</metadata>
+            <length type="integer">240</length>
+        </song>
+    </queue>
+</request>

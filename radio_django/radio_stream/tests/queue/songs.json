@@ -1,0 +1,11 @@
+{
+    "current": {"length": 120, "position": 60},
+    "queue": [
+        {"metadata": "welcome to the space show", "length": 180},
+        {"metadata": "some extra testing data", "length": 180},
+        {"metadata": "test duplicate tracks in queue", "length": 240},
+        {"metadata": "Magical Artist - Magic World", "length": 300},
+        {"metadata": "test duplicate tracks in queue", "length": 240}
+    ]
+}
+
