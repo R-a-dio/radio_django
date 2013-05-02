@@ -1,19 +1,43 @@
 from haystack.query import SearchQuerySet
 from radio_django.api import container
-from radio_collection.models import Tracks
+from radio_collection.models import Tracks, Albums, Artists
 from radio_collection.search import RESULTS_PER_PAGE
 from django.conf.urls import url
 from django.http import Http404
 from django.core.paginator import Paginator, InvalidPage
 from tastypie.resources import ModelResource
 from tastypie.utils import trailing_slash
+from tastypie.fields import ForeignKey
+
+class ArtistResource(ModelResource):
+    class Meta:
+        queryset = Artists.objects.all().order_by('-id')
+        resource_name = 'artists'
+        allowed_methods = ['get']
+        fields = ['name', 'id']
+        max_limit = 20
+
+
+class AlbumResource(ModelResource):
+    class Meta:
+        queryset = Albums.objects.all().order_by('-id')
+        resource_name = 'albums'
+        allowed_methods = ['get']
+        fields = ['name', 'id']
+        max_limit = 20
+
 
 class TrackResource(ModelResource):
+    artist = ForeignKey(ArtistResource, 'artist',
+                        full=True, null=True, blank=True, full_list=True)
+    album = ForeignKey(AlbumResource, 'album',
+                       full=True, null=True, blank=True, full_list=True)
     class Meta:
-        queryset = Tracks.objects.all()
+        queryset = Tracks.objects.all().order_by('-id')
         resource_name = 'tracks'
-        list_allowed_methods = ['get']
+        allowed_methods = ['get']
         fields = ['title', 'length', 'id', 'album', 'artist']
+        max_limit = 20
 
     def prepend_urls(self):
         return [
@@ -48,5 +72,8 @@ class TrackResource(ModelResource):
 
         return self.create_response(request, {'objects': objects})
 
+
 # Register ourself with the API urls
 container.register(TrackResource())
+container.register(ArtistResource())
+container.register(AlbumResource())
