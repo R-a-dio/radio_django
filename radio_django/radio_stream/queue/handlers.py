@@ -1,3 +1,4 @@
+from django.utils.timezone import utc
 from django.core.cache import cache
 from django.conf.urls import url
 from tastypie.resources import ModelResource
@@ -16,12 +17,24 @@ import datetime
 # Datetimes are formatted according to http://www.ecma-international.org/ecma-262/5.1/#sec-15.9.1.15
 
 class WriteDjangoAuthorization(DjangoAuthorization):
-    def read_list(self, object_list, bundle):
-        return object_list
-    
-    def read_detail(self, object_list, bundle):
-        return True
+    """
+    A simple subclass that makes read-only access require no authorization.
+    """
+    def is_authorized(self, request, object=None):
+        if request.method == 'GET':
+            return True
+        else:
+            return super(WriteDjangoAuthorization, self).is_authorized(request, object)
 
+class WriteBasicAuthentication(BasicAuthentication):
+    """
+    A simple subclass that makes read-only access require no authentication.
+    """
+    def is_authenticated(self, request, **kwargs):
+        if request.method == 'GET':
+            return True
+        else:
+            return super(WriteBasicAuthentication, self).is_authenticated(request, object)
 
 class QueueResource(ModelResource):
     song = ForeignKey(SongResource, 'song',
@@ -30,9 +43,9 @@ class QueueResource(ModelResource):
     class Meta:
         queryset = Queue.objects.all().order_by('time')
         resource_name = "queue"
-        allowed_methods = ['get', 'post', 'put', 'delete']
+        allowed_methods = ['get', 'post', 'delete']
         authorization = WriteDjangoAuthorization()
-        authentication = BasicAuthentication()
+        authentication = WriteBasicAuthentication()
         include_resource_uri = False
         serializer = QueueSerializer()
 
@@ -57,7 +70,7 @@ class QueueResource(ModelResource):
 
     def get_list(self, request, **kwargs):
         user = cache.get('radio_current_dj')
-        return self.get_queue(request, user=user, **kwargs)
+        return self.get_queue_list(request, user=user, **kwargs)
 
     def get_queue_list(self, request, user, **kwargs):
         """
@@ -165,7 +178,7 @@ class QueueResource(ModelResource):
             # Make sure the metadata is a string type.
             if not isinstance(song['metadata'], (unicode, str, bytes)):
                 return self.create_error_response(request,
-                            u"`metadata` value is not an integer.", -5)
+                            u"`metadata` value is not a string.", -5)
 
 
     def obj_create(self, bundle, **kwargs):
@@ -174,7 +187,7 @@ class QueueResource(ModelResource):
         dj = bundle.request.user.dj_account
 
         # Check if we have an offset for the queue start
-        current_time = datetime.datetime.now()
+        current_time = datetime.datetime.utcnow().replace(tzinfo=utc)
         if 'current' in data:
             position = int(data['current']['position'])
             length = int(data['current']['length'])
