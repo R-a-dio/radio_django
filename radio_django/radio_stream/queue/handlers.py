@@ -34,7 +34,7 @@ class WriteBasicAuthentication(BasicAuthentication):
         if request.method == 'GET':
             return True
         else:
-            return super(WriteBasicAuthentication, self).is_authenticated(request, object)
+            return super(WriteBasicAuthentication, self).is_authenticated(request)
 
 class QueueResource(ModelResource):
     song = ForeignKey(SongResource, 'song',
