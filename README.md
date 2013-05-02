@@ -14,12 +14,10 @@ You currently have to install `xapian` by yourself before installing this projec
 `pip install -e git+https://github.com/toastdriven/django-haystack.git@master#egg=django-haystack`
 `pip install -e git+https://github.com/notanumber/xapian-haystack.git@master#egg=xapian-haystack`
 
-Django-Piston
--------------
+Database
+--------
 
-Due to our usage of Django 1.5 we need the current master of django-piston, this can be installed by running the following command:
-
-`pip install -e git+https://github.com/brandsExclusive/django-piston.git@master#egg=django-piston`
+The below configuration example, and the setup.py both assume you are using `postgresql` as the database. Using another database is possible and you should adjust the settings towards that.
 
 
 Installation
