@@ -41,7 +41,7 @@ class Faves(models.Model):
 
     song = models.ForeignKey('radio_stream.Songs', help_text="The song faved.")
 
-    user = models.ForeignKey(Nicknames, help_text="The user that faved this.")
+    user = models.ForeignKey(Names, help_text="The user that faved this.")
 
     class Meta:
         unique_together = ('user', 'song')
