@@ -27,7 +27,9 @@ class Collection(models.Model):
 
     track = models.ForeignKey("Tracks", unique=True)
 
-    filename = models.TextField(blank=True, help_text="Original filename.")
+    original_filename = models.TextField(blank=True, help_text="Original filename.")
+
+    filename = models.TextField(blank=True, help_text="Filename of the track in our system")
 
     good = models.BooleanField(default=False, help_text="Was this a good upload.")
 
