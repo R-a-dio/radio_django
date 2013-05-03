@@ -1,5 +1,5 @@
 from django.db import models
-from radio_users.models import Nicknames, Djs
+from radio_users.models import Djs
 import hashlib
 
 
@@ -23,18 +23,6 @@ class Songs(models.Model):
         if (isinstance(metadata, unicode)):
             metadata = metadata.encode('utf-8', 'replace').lower().strip()
         return hashlib.sha1(metadata).hexdigest()
-
-
-class Faves(models.Model):
-    time = models.DateTimeField(null=True, blank=True, db_index=True,
-                                help_text="When was this faved.")
-
-    song = models.ForeignKey(Songs, help_text="The song faved.")
-
-    user = models.ForeignKey(Nicknames, help_text="The user that faved this.")
-
-    class Meta:
-        unique_together = ('user', 'song')
 
 
 class Played(models.Model):

@@ -1,6 +1,6 @@
 from django.core.paginator import Paginator, InvalidPage
 from django.template import RequestContext
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.conf import settings
 from radio_stream.models import Queue
 from radio_users import retrieve_current_dj
@@ -32,3 +32,7 @@ def index(request, user=None, page=1):
     return render(request, "queue/index.html",
                   context_instance=context)
     
+def by_name(request, user, page=1):
+    user = get_object_or_404(Djs, name__iexact=user)
+
+    return index(request, user, page)
