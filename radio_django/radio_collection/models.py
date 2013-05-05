@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from audit_log.models.managers import AuditLog
+from radio_collection.utils import generate_music_filename_field
 
 
 class Collection(models.Model):
@@ -29,7 +30,9 @@ class Collection(models.Model):
 
     original_filename = models.TextField(blank=True, help_text="Original filename.")
 
-    filename = models.TextField(blank=True, help_text="Filename of the track in our system")
+    filename = models.FileField(upload_to=generate_music_filename_field,
+                    help_text="Filename of the track in our system")
+
 
     good = models.BooleanField(default=False, help_text="Was this a good upload.")
 
@@ -55,7 +58,7 @@ class Tracks(models.Model):
     length = models.IntegerField(help_text="The length of the track.")
     
     tags = models.ManyToManyField(Tags, null=True, blank=True,
-                                  help_text="Relevant tags for this track.")
+                                help_text="Relevant tags for this track.")
 
     artist = models.ForeignKey("Artists", null=True, blank=True)
 
