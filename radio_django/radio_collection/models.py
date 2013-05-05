@@ -30,13 +30,11 @@ class Collection(models.Model):
 
     original_filename = models.TextField(blank=True, help_text="Original filename.")
 
-    filename = models.FileField(upload_to=generate_music_filename_field,
+    file = models.FileField(upload_to=generate_music_filename_field,
                     help_text="Filename of the track in our system")
 
 
     good = models.BooleanField(default=False, help_text="Was this a good upload.")
-
-    reupload_needed = models.BooleanField(default=False, help_text="Does this need a replacement.")
 
     status = models.IntegerField(choices=STATUS_CHOICES)
 
@@ -68,6 +66,13 @@ class Tracks(models.Model):
 
     # Legacy fields underneath
     legacy_tags = models.TextField(help_text="Legacy tags that have not been split yet.")
+
+    @property
+    def metadata(self):
+        if self.artist:
+            return u"{:s} - {:s}".format(self.artist.name, self.title)
+        return self.title
+
 
 class Artists(models.Model):
     name = models.TextField(help_text="Name of the artist.")

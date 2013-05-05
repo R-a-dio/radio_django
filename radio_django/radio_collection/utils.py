@@ -1,7 +1,11 @@
 from django.conf import settings
 import os.path
 import hashlib
+import string
+import random
 
+
+salt = string.letters + string.digits
 
 def generate_music_filename(filename):
     """
@@ -9,9 +13,14 @@ def generate_music_filename(filename):
 
     This is used to avoid having a 'too public' approachable database of our music files.
     """
+    pepper = ''.join(random.choice(salt) for _ in range(15))
+
     extension = os.path.splitext(filename)[1]
 
-    new_filename = hashlib.md5(filename + salt).hexdigest()
+    if isinstance(filename, unicode):
+        filename = filename.encode('utf-8')
+
+    new_filename = hashlib.md5(filename + pepper).hexdigest()
 
     return "{:s}{:s}".format(new_filename, extension)
 

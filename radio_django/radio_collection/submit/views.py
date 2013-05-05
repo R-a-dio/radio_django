@@ -1,11 +1,14 @@
+from django import forms
 from django.forms import Form, ModelChoiceField, CharField, FileField
+from django.template import RequestContext
 from django.shortcuts import render
 from django.conf import settings
-from radio_collection.models import Collection
+from radio_collection.models import Collection, Tracks, Artists, Albums
 from radio_users.models import Uploads
 import datetime
 import string
 import random
+import mutagen
 
 
 class ReplacementChoices(ModelChoiceField):
@@ -43,12 +46,15 @@ class SubmissionForm(Form):
         A small wrapper around `handle_submission` that sets our `_error` attribute
         if an error is raised.
         """
+        print dir(self)
+        self._errors.setdefault(forms.forms.NON_FIELD_ERRORS, forms.util.ErrorList())
         try:
             self.handle_submission(request)
         except SubmissionError as err:
-            self._error = err.message
+            self._errors[forms.forms.NON_FIELD_ERRORS].append(err.message)
         except Exception as err:
-            self._error = "Unexpected error occured"
+            print err
+            self._errors[forms.forms.NON_FIELD_ERRORS].append("Unexpected error occured")
 
     def handle_submission(self, request):
         """
@@ -75,7 +81,7 @@ class SubmissionForm(Form):
         ip_address = request.META.get("REMOTE_ADDR", None)
         
         # Check if the IP is allowed to submit already.
-        if not self.ip_address:
+        if not ip_address:
             raise SubmissionError(u"You don't have an IP address.")
 
         # TODO: Make this use a global config setting.
@@ -84,7 +90,7 @@ class SubmissionForm(Form):
 
         recent_upload = Uploads.objects.filter(identifier=ip_address, time__gt=submit_threshold)
 
-        if recent_upload and not request.user.is_authenticated():
+        if recent_upload and not request.user.is_authenticated() and not settings.DEBUG:
             raise SubmissionError(u"You have to wait before uploading another song.")
         
         song = self.files['track']
@@ -94,7 +100,10 @@ class SubmissionForm(Form):
         except AttributeError:
             raise SubmissionError(u"Unexpected error occured, poke someone on IRC (error code: 4666)")
 
+        # TODO: Check for exceptions...
         song_info = mutagen.File(filename, easy=True)
+
+        print song_info
 
         maximum_size = settings.SUBMISSION_MAX_SIZE_MAPPING.get(type(song_info), None)
 
@@ -121,7 +130,7 @@ class SubmissionForm(Form):
 
 
         title = song_info.get('title', None)
-        if not track:
+        if not title:
             raise SubmissionError(u"Please at least supply a track title tag.")
 
         title = u" ,".join(title)
@@ -133,17 +142,12 @@ class SubmissionForm(Form):
         if not created:
             raise SubmissionError(u"Duplicate detected in the database.")
 
-        new_filename = save_submission(song)
 
         collection_obj = Collection.objects.create(
                                 track=track_obj,
-                                original_filename=song.name,
-                                filename=new_filename,
-                                good=False,
-                                reupload_needed=False,
+                                file=song,
                                 status=Collection.PENDING,
                                 uploader_comment=self.cleaned_data['comment'],
-                                decline_comment=None
                                 )
 
         uploads_obj = Uploads.objects.create(
@@ -151,37 +155,6 @@ class SubmissionForm(Form):
                               upload=collection_obj,
                               time=datetime.datetime.now()
                               )
-
-
-# This is a string of characters we use for filename generation, this should really
-# not be used but it can't be helped at this point.
-crappy_things = string.letters + string.digits
-def save_submission(song):
-    """
-    Saves the open submitted file object to our SUBMISSION_FILE_LOCATION
-    and returns the filename given to it. The filename is a random string
-    of size 15.
-
-    .. note::
-        The filename is relative to the SUBMISSION_FILE_LOCATION setting.
-    """
-    extension = os.path.splitext(song.name)[1]
-
-    while True:
-        salt = "".join(random.choice(crappy_things) for x in xrange(15))
-
-        filename = "{:s}{:s}".format(salt, extension)
-
-        filepath = os.path.join(settings.SUBMISSION_FILE_LOCATION, filename)
-
-        if not os.path.exists(filepath):
-            break
-
-    with open(filepath, "wb+") as f:
-        for chunk in song.chunks():
-            f.write(chunk)
-
-    return filename
 
 
 def upload(request):
@@ -192,6 +165,8 @@ def upload(request):
     else:
         form = SubmissionForm()
 
-    return render(request, 'submit/index.html', {
-                                'form': form,
-                                })
+    context = RequestContext(request, {
+        'form': form,
+    })
+
+    return render(request, 'submit/index.html', context_instance=context)
