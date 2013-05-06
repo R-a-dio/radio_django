@@ -46,35 +46,33 @@ class SubmissionForm(Form):
         A small wrapper around `handle_submission` that sets our `_error` attribute
         if an error is raised.
         """
-        print dir(self)
         self._errors.setdefault(forms.forms.NON_FIELD_ERRORS, forms.util.ErrorList())
         try:
             self.handle_submission(request)
         except SubmissionError as err:
-            self._errors[forms.forms.NON_FIELD_ERRORS].append(err.message)
+            self._errors[forms.forms.NON_FIELD_ERRORS].append(unicode(err))
         except Exception as err:
-            print err
-            self._errors[forms.forms.NON_FIELD_ERRORS].append("Unexpected error occured")
+            message = u"Unexpected error occured: {:s}".format(err)
+            self._errors[forms.forms.NON_FIELD_ERRORS].append(message)
 
     def handle_submission(self, request):
         """
         This function does all the heavy lifting for submissions.
 
         We don't use the validation of the Form due to our need of request specific
-        information.
+        information. Most notable the ip address.
 
         This function does the following procedures in order:
             - Make sure the user is allowed to submit by their IP address
             - Make sure the file is acceptable; This checks:
-                - Filesize
+                - Filesize (by checking SUBMISSION_MAX_SIZE_MAPPING)
                 - Mutagen readability
-                - Enabled support
+                - Enabled support (by checking SUBMISSION_MAX_SIZE_MAPPING)
             - Get or create the Artist entry.
             - Get or create the Album entry.
             - Check if we have at the very least a Title for the track.
             - Get or create the Track entry.
                 - This will return an error if the track already exists.
-            - Save the file in our SUBMISSION_FILE_LOCATION
             - Create Collection entry.
             - Create Uploads entry.
         """
@@ -100,10 +98,11 @@ class SubmissionForm(Form):
         except AttributeError:
             raise SubmissionError(u"Unexpected error occured, poke someone on IRC (error code: 4666)")
 
-        # TODO: Check for exceptions...
-        song_info = mutagen.File(filename, easy=True)
+        try:
+            song_info = mutagen.File(filename, easy=True)
+        except IOError as err:
+            raise SubmissionError(u"Error inspecting submitted file: {:s}".format(err))
 
-        print song_info
 
         maximum_size = settings.SUBMISSION_MAX_SIZE_MAPPING.get(type(song_info), None)
 
