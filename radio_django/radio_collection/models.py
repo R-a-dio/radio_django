@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from audit_log.models.managers import AuditLog
 from radio_collection.utils import generate_music_filename_field
 
 
@@ -9,8 +8,6 @@ class Collection(models.Model):
     A table that keeps track of our collection state. This enables us to get a good
     glance of our collection.
     """
-    # Track changes.
-    log = AuditLog()
 
 
     PENDING = 0
@@ -26,7 +23,10 @@ class Collection(models.Model):
         (UNPLAYABLE, 'Unplayable'),
     )
 
-    track = models.ForeignKey("Tracks", unique=True)
+    # A set to check if we can play our entry or not
+    PLAYABLE = set((ACCEPTED, REPLACEMENT))
+
+    track = models.OneToOneField('Tracks')
 
     original_filename = models.TextField(blank=True, help_text="Original filename.")
 
@@ -48,11 +48,10 @@ class Collection(models.Model):
 class Tags(models.Model):
     name = models.CharField(max_length=100)
 
-    log = AuditLog()
-
 
 class Tracks(models.Model):
     title = models.TextField(help_text="Title of the track.")
+
     length = models.IntegerField(help_text="The length of the track.")
     
     tags = models.ManyToManyField(Tags, null=True, blank=True,
@@ -62,7 +61,6 @@ class Tracks(models.Model):
 
     album = models.ForeignKey("Albums", null=True, blank=True)
 
-    log = AuditLog()
 
     # Legacy fields underneath
     legacy_tags = models.TextField(help_text="Legacy tags that have not been split yet.")
@@ -80,8 +78,6 @@ class Artists(models.Model):
     tags = models.ManyToManyField(Tags, null=True, blank=True,
                                   help_text="Relevant tags for this artist.")
 
-    log = AuditLog()
-
 
 class Albums(models.Model):
     name = models.TextField(help_text="Name of this album.")
@@ -89,7 +85,6 @@ class Albums(models.Model):
     tags = models.ManyToManyField(Tags, null=True, blank=True,
                                   help_text="Relevant tags for this album.")
     
-    log = AuditLog()
 
 
 class Played(models.Model):
