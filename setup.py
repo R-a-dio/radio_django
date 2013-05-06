@@ -9,12 +9,14 @@ setup(
     license = "BSD",
     install_requires = [
         "Django>=1.5",
+        "django-grappelli",
         "psycopg2",
         "south",
-        "django-audit-log",
+        "django-reversion",
         "django-celery",
         "celery-haystack",
         "mutagen",
         "django-tastypie",
-                        ],
+        "Pillow",
+        ],
 )
