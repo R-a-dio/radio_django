@@ -62,3 +62,18 @@ Celery
 ------
 
 Celery requires a message broker to be installed. We suggest using RabbitMQ, instructions can be found [here](http://docs.celeryproject.org/en/latest/getting-started/brokers/rabbitmq.html) and on their own website. Don't forget to set the `BROKER_URL` in `local_settings.py`.
+
+
+Database Table creation
+-----------------------
+
+We use the excellent Django South app for migrating schemas around. We have a small problem with a circular dependency though so you have to run the following commands in order for it to work without errors. Don't forget to first run the usual `manage.py syncdb` before the migrations.
+
+    manage.py migrate radio_collection 0001
+    manage.py migrate radio_users 0001
+    manage.py migrate radio_stream 0001
+    # At this point we have walked around the dependency problem and we can do just a full migrate.
+    manage.py migrate
+
+
+

@@ -8,66 +8,21 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'Djs'
-        db.create_table(u'radio_users_djs', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=45)),
-            ('description', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('visible', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('priority', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('user', self.gf('django.db.models.fields.related.OneToOneField')(related_name='dj_account', unique=True, to=orm['auth.User'])),
-            ('image', self.gf('django.db.models.fields.files.ImageField')(max_length=100)),
-        ))
-        db.send_create_signal(u'radio_users', ['Djs'])
+        # Adding field 'Faves.song'
+        db.add_column(u'radio_users_faves', 'song',
+                      self.gf('django.db.models.fields.related.ForeignKey')(default=None, to=orm['radio_stream.Songs']),
+                      keep_default=False)
 
-        # Adding model 'Nicknames'
-        db.create_table(u'radio_users_nicknames', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('passcode', self.gf('django.db.models.fields.CharField')(max_length=8, null=True)),
-        ))
-        db.send_create_signal(u'radio_users', ['Nicknames'])
-
-        # Adding model 'Names'
-        db.create_table(u'radio_users_names', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=30)),
-            ('nickname', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['radio_users.Nicknames'])),
-        ))
-        db.send_create_signal(u'radio_users', ['Names'])
-
-        # Adding model 'Faves'
-        db.create_table(u'radio_users_faves', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('time', self.gf('django.db.models.fields.DateTimeField')(db_index=True, null=True, blank=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['radio_users.Names'])),
-        ))
-        db.send_create_signal(u'radio_users', ['Faves'])
-
-        # Adding model 'Uploads'
-        db.create_table(u'radio_users_uploads', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('identifier', self.gf('django.db.models.fields.CharField')(max_length=120)),
-            ('upload', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['radio_collection.Collection'])),
-            ('time', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-        ))
-        db.send_create_signal(u'radio_users', ['Uploads'])
+        # Adding unique constraint on 'Faves', fields ['user', 'song']
+        db.create_unique(u'radio_users_faves', ['user_id', 'song_id'])
 
 
     def backwards(self, orm):
-        # Deleting model 'Djs'
-        db.delete_table(u'radio_users_djs')
+        # Removing unique constraint on 'Faves', fields ['user', 'song']
+        db.delete_unique(u'radio_users_faves', ['user_id', 'song_id'])
 
-        # Deleting model 'Nicknames'
-        db.delete_table(u'radio_users_nicknames')
-
-        # Deleting model 'Names'
-        db.delete_table(u'radio_users_names')
-
-        # Deleting model 'Faves'
-        db.delete_table(u'radio_users_faves')
-
-        # Deleting model 'Uploads'
-        db.delete_table(u'radio_users_uploads')
+        # Deleting field 'Faves.song'
+        db.delete_column(u'radio_users_faves', 'song_id')
 
 
     models = {
@@ -145,6 +100,14 @@ class Migration(SchemaMigration):
             'tags': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': u"orm['radio_collection.Tags']", 'null': 'True', 'blank': 'True'}),
             'title': ('django.db.models.fields.TextField', [], {})
         },
+        u'radio_stream.songs': {
+            'Meta': {'object_name': 'Songs'},
+            'hash': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '45'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'length': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'metadata': ('django.db.models.fields.TextField', [], {}),
+            'songid': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['radio_stream.Songs']", 'null': 'True', 'blank': 'True'})
+        },
         u'radio_users.djs': {
             'Meta': {'object_name': 'Djs'},
             'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
@@ -156,8 +119,9 @@ class Migration(SchemaMigration):
             'visible': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
         },
         u'radio_users.faves': {
-            'Meta': {'object_name': 'Faves'},
+            'Meta': {'unique_together': "(('user', 'song'),)", 'object_name': 'Faves'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'song': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['radio_stream.Songs']"}),
             'time': ('django.db.models.fields.DateTimeField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['radio_users.Names']"})
         },
