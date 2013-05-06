@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from audit_log.models.managers import AuditLog
 from radio_collection.models import Collection
 
 
@@ -21,7 +20,7 @@ class Djs(models.Model):
 
     user = models.OneToOneField(User, related_name='dj_account')
 
-    log = AuditLog()
+    image = models.ImageField(upload_to='img/djs')
 
 
 class Nicknames(models.Model):

@@ -1,12 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 from radio_news.utils import unique_slugify
-from audit_log.models.managers import AuditLog
 
 
 class News(models.Model):
-    log = AuditLog()
-
     title = models.CharField(max_length=45, help_text="Title of the news post.")
 
     time = models.DateTimeField(auto_now_add=True, help_text="The time this post was created.")

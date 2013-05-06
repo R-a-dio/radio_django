@@ -12,10 +12,11 @@ class Migration(SchemaMigration):
         db.create_table(u'radio_news_news', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('title', self.gf('django.db.models.fields.CharField')(max_length=45)),
-            ('time', self.gf('django.db.models.fields.DateTimeField')()),
+            ('time', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('text', self.gf('django.db.models.fields.TextField')()),
             ('commenting', self.gf('django.db.models.fields.BooleanField')(default=True)),
             ('poster', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+            ('slug', self.gf('django.db.models.fields.SlugField')(max_length=100)),
         ))
         db.send_create_signal(u'radio_news', ['News'])
 
@@ -27,7 +28,7 @@ class Migration(SchemaMigration):
             ('text', self.gf('django.db.models.fields.TextField')()),
             ('mail', self.gf('django.db.models.fields.CharField')(max_length=200, blank=True)),
             ('poster', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True, blank=True)),
-            ('time', self.gf('django.db.models.fields.DateTimeField')()),
+            ('time', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
         ))
         db.send_create_signal(u'radio_news', ['NewsComment'])
 
@@ -82,8 +83,9 @@ class Migration(SchemaMigration):
             'commenting': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'poster': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
+            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '100'}),
             'text': ('django.db.models.fields.TextField', [], {}),
-            'time': ('django.db.models.fields.DateTimeField', [], {}),
+            'time': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '45'})
         },
         u'radio_news.newscomment': {
@@ -94,7 +96,7 @@ class Migration(SchemaMigration):
             'news_post': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['radio_news.News']"}),
             'poster': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']", 'null': 'True', 'blank': 'True'}),
             'text': ('django.db.models.fields.TextField', [], {}),
-            'time': ('django.db.models.fields.DateTimeField', [], {})
+            'time': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'})
         }
     }
 
