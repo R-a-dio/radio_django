@@ -1,7 +1,9 @@
 from django.conf.urls import patterns, include, url
+from django.conf import settings
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
+from radio_django.api import container
 
 
 urlpatterns = patterns('',
@@ -23,17 +25,12 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^api/', include(container.urls)),
+
+    url(r'^grappelli/', include('grappelli.urls')),
 )
 
-from radio_django.api import container
-
-urlpatterns += patterns('',
-    url(r'^api/', include(container.urls))
-)
-
-# API root urls are defined here.
-#urlpatterns += patterns('',
-#    url(r'^api/tracks/search/', include('radio_collection.search.api_urls')),
-#    url(r'^api/request/', include('radio_collection.request.api_urls')),
-#    url(r'^api/queue/', include('radio_stream.queue.api_urls')),
-#)
+#if settings.DEBUG:
+#    from django.conf.urls.static import static
+#
+#    urlpatterns += staticfiles_urlpatterns()

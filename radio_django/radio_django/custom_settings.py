@@ -30,15 +30,15 @@ TEMPLATE_LOADERS += (
 
 from settings import INSTALLED_APPS
 INSTALLED_APPS += (
-    #'grappelli',
+    'grappelli',
     'django.contrib.admin',
     'django.contrib.admindocs',
-    #'djcelery',
     'south',
     'haystack',
     'djcelery',
     'celery_haystack',
     'tastypie',
+    'reversion',
     'radio_news',
     'radio_stream',
     'radio_collection',
