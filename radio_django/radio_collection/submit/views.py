@@ -5,10 +5,14 @@ from django.shortcuts import render
 from django.conf import settings
 from radio_collection.models import Collection, Tracks, Artists, Albums
 from radio_users.models import Uploads
+import logging
 import datetime
 import string
 import random
 import mutagen
+
+
+logger = logging
 
 
 class ReplacementChoices(ModelChoiceField):
@@ -51,10 +55,12 @@ class SubmissionForm(Form):
             self.handle_submission(request)
         except SubmissionError as err:
             self._errors[forms.forms.NON_FIELD_ERRORS].append(unicode(err))
+            logger.exception(u"Submission error")
         except Exception as err:
             message = u"Unexpected error occured: {:s}".format(err)
             self._errors[forms.forms.NON_FIELD_ERRORS].append(message)
-
+            logger.exception(u"Unexpected error occured")
+    
     def handle_submission(self, request):
         """
         This function does all the heavy lifting for submissions.
@@ -164,8 +170,14 @@ def upload(request):
     else:
         form = SubmissionForm()
 
+    accepted = Collection.objects.filter(status=Collection.ACCEPTED).select_related()
+
+    declined = Collection.objects.filter(status=Collection.DECLINED).select_related()
+
     context = RequestContext(request, {
         'form': form,
+        'accepted': accepted,
+        'declined': declined,
     })
 
     return render(request, 'submit/index.html', context_instance=context)
