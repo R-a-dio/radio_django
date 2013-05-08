@@ -1,0 +1,12 @@
+{% load time_extras %}
+{% for item in iterator|slice:limit %}
+<div class="row-fluid {{ prefix }}">
+    <div class="span2 center-text {{ prefix }}-time">
+        {{ item.time|time_format }}
+    </div>
+    <div class="span10 {{ prefix }}-meta">
+        {{ item.song.metadata }}
+    </div>
+</div>
+{% endfor %}
+
