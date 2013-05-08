@@ -1,51 +1,42 @@
+{% load staticfiles %}
+{% load sitetree %}
 <!DOCTYPE html>
 <html><head>
     <title>{% block title %}R/a/dio{% endblock title %}</title>
     <meta charset="utf-8" />
     <meta name="description" content="We cater to all of your Anime/Japan-related music tastes. Just point your favorite music player at our stream link." />
     <meta name="keywords" content="japan,music,anime,radio,r/a/dio,r-a-dio,stream,anison,日本,アニソン" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.min.css" %}">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static "js/bootstrap.min.js" %}"></script>
 </head>
 <body>
     {% block topbar %}
-        <div class="topbar">
-            <div class="topbar-inner">
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
                 <div class="container">
-                    <h3><a href="#">R/a/dio</a></h3>
-                    <ul class="nav">
-                        <li class="go active" id="menu_home">
-                            <a href="/">Home</a>
-                        </li>
-                        <li class="go" id="menu_news">
-                            <a href="/news/">News</a>
-                        </li>
-                        <li class="go" id="menu_last_played">
-                            <a href="/lastplayed/">Last Played</a>
-                        </li>
-                        <li class="go" id="menu_queue">
-                            <a href="/queue/">Queue</a>
-                        </li>
-                        <li class="go" id="menu_favourites">
-                            <a href="/favourites/">Favourites</a>
-                        </li>
-                        <li class="go" id="menu_submit">
-                            <a href="/submit/">Submit track</a>
-                        </li>
-                        <li class="go" id="menu_staff">
-                            <a href="/staff/">Staff</a>
-                        </li>
-                        <li class="go" id="menu_irc">
-                            <a href="/irc/">IRC</a>
-                        </li>
-                        <li class="go" id="menu_stats">
-                            <a href="/stats/">Stats</a>
-                        </li>
-                        <li class="go" id="menu_search">
-                            <a href="/search/">Request</a>
-                        </li>
-                    </ul>
-                    <form id="search" class="pull-right" action="/search/">
-                        <input class="search" type="text" name="q" autocomplete="off" placeholder="Search library">
-                    </form>
+                    <button type="button" class="btn btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="brand" href="/" style="padding: 8px 20px 8px 20px">
+                        <img src="{% static "img/logo/title.png" %}" width="85" height="20">
+                    </a>
+                    <div class="nav-collapse collapse">
+                        {% sitetree_menu from "radio_tree" include "trunk" template "menu/menu_bootstrap.html" %}
+                       <form id="search" class="navbar-form pull-right" action="/search/">
+                            <span class="control-group">
+                                <span class="controls">
+                                    <span class="input-prepend" style="margin-bottom: 0px">
+                                        <span class="add-on"><i class="icon-search"></i></span>
+                                        <input class="span3 search" type="text" name="q" autocomplete="off" placeholder="Search library">
+                                    </span>
+                                </span>
+                            </span>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
