@@ -18,5 +18,6 @@ setup(
         "mutagen",
         "django-tastypie",
         "Pillow",
+        "django-sitetree",
         ],
 )
