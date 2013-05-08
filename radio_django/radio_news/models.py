@@ -4,6 +4,10 @@ from radio_news.utils import unique_slugify
 
 
 class News(models.Model):
+    class Meta:
+        verbose_name = "news"
+        verbose_name_plural = "news"
+
     title = models.CharField(max_length=45, help_text="Title of the news post.")
 
     time = models.DateTimeField(auto_now_add=True, help_text="The time this post was created.")
@@ -28,6 +32,9 @@ class News(models.Model):
 
 
 class NewsComment(models.Model):
+    class Meta:
+        verbose_name = "news comment"
+
     news_post = models.ForeignKey(News, help_text="The news post this was posted on.")
 
     name = models.CharField(max_length=100, blank=True, help_text="The nickname posted under.")

@@ -8,7 +8,9 @@ class Collection(models.Model):
     A table that keeps track of our collection state. This enables us to get a good
     glance of our collection.
     """
-
+    class Meta:
+        verbose_name = u"collection information"
+        verbose_name_plural = u"collection information"
 
     PENDING = 0
     ACCEPTED = 1
@@ -28,11 +30,10 @@ class Collection(models.Model):
 
     track = models.OneToOneField('Tracks')
 
-    original_filename = models.TextField(blank=True, help_text="Original filename.")
-
     file = models.FileField(upload_to=generate_music_filename_field,
                     help_text="Filename of the track in our system")
 
+    original_filename = models.TextField(blank=True, help_text="Original filename.")
 
     good = models.BooleanField(default=False, help_text="Was this a good upload.")
 
@@ -44,12 +45,44 @@ class Collection(models.Model):
     decline_comment = models.CharField(null=True, max_length=120,
                                        help_text="Comment of why this was declined.")
 
+    def __unicode__(self):
+        return unicode(self.track)
+
+
+class Pending(Collection):
+    class Meta:
+        proxy = True
+        verbose_name = "pending track"
+
+    def title(self):
+        return self.track.title
+    title.admin_order_field = 'track__title'
+
+    def artist(self):
+        return self.track.artist.name
+    artist.admin_order_field = 'track__artist__name'
+
+    def album(self):
+        return self.track.album.name
+    album.admin_order_field = 'track__album__name'
+
 
 class Tags(models.Model):
+    class Meta:
+        verbose_name = u'tag'
+        verbose_name_plural = u'tags'
+
     name = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return self.name
 
 
 class Tracks(models.Model):
+    class Meta:
+        verbose_name = u'track'
+        verbose_name_plural = u'tracks'
+
     title = models.TextField(help_text="Title of the track.")
 
     length = models.IntegerField(help_text="The length of the track.")
@@ -71,20 +104,34 @@ class Tracks(models.Model):
             return u"{:s} - {:s}".format(self.artist.name, self.title)
         return self.title
 
+    def __unicode__(self):
+        return self.metadata
+
 
 class Artists(models.Model):
+    class Meta:
+        verbose_name = 'artist'
+
     name = models.TextField(help_text="Name of the artist.")
     
     tags = models.ManyToManyField(Tags, null=True, blank=True,
                                   help_text="Relevant tags for this artist.")
 
+    def __unicode__(self):
+        return self.name
+
 
 class Albums(models.Model):
+    class Meta:
+        verbose_name = 'album'
+
     name = models.TextField(help_text="Name of this album.")
 
     tags = models.ManyToManyField(Tags, null=True, blank=True,
                                   help_text="Relevant tags for this album.")
     
+    def __unicode__(self):
+        return self.name
 
 
 class Played(models.Model):
@@ -94,6 +141,9 @@ class Played(models.Model):
 
     user = models.ForeignKey(User, help_text="The user responsible for this playback.")
 
+    def __unicode__(self):
+        return repr(self.time)
+
 
 class Requests(models.Model):
     time = models.DateTimeField(db_index=True, help_text="When did this get requested.")
@@ -102,4 +152,7 @@ class Requests(models.Model):
 
     identifier = models.CharField(max_length=150, db_index=True,
                                   help_text="Identifier of this request, either an IP or Hostname.")
+
+    def __unicode__(self):
+        return repr(self.time)
 
