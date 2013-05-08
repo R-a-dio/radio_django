@@ -19,6 +19,7 @@ setup(
         "django-tastypie",
         "Pillow",
         "django-sitetree",
-        "sorl-thumbnail',
+        "sorl-thumbnail",
+        "django-pipeline",
         ],
 )

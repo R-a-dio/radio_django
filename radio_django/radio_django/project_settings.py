@@ -4,8 +4,32 @@
 
 #USE_THOUSAND_SEPARATOR = True
 
+PIPELINE_CSS = {
+    "radio_css": {
+        'source_filenames': (
+            "css/custom/*.less",
+            "css/custom/*.css",
+        ),
+        "output_filename": 'css/radio.css',
+    },
+}
+
+PIPELINE_JS = {
+    "radio_js": {
+        'source_filenames': (
+            "js/custom/*.js",
+        ),
+        "output_filename": 'js/radio.js',
+    },
+}
+
+STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+
+PIPELINE_CSS_COMPRESSOR = None
+PIPELINE_JS_COMPRESSOR = None
+
+# We don't want any of the less-safe formats to be used.
 TASTYPIE_DEFAULT_FORMATS = ['json', 'xml', 'jsonp']
-#GRAPPELLI_ADMIN_TITLE = ''
 
 import mutagen.flac, mutagen.mp3, mutagen.oggvorbis
 import datetime

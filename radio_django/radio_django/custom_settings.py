@@ -14,10 +14,11 @@ TIME_ZONE = 'Europe/Amsterdam'
 
 import os.path
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(PROJECT_ROOT, '..'))
 
 from settings import STATICFILES_DIRS
 STATICFILES_DIRS += (
-    os.path.join(PROJECT_ROOT, "..", "static"),
+    os.path.join(PROJECT_ROOT, "static"),
 )
 
 from settings import MIDDLEWARE_CLASSES
@@ -46,6 +47,7 @@ INSTALLED_APPS += (
     'django.contrib.admin',
     'django.contrib.admindocs',
     'sorl.thumbnail',
+    'pipeline',
     'sitetree',
     'south',
     'haystack',
