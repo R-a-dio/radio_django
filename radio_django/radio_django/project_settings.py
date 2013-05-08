@@ -33,6 +33,7 @@ CELERYD_PREFETCH_MULTIPLIER = 1
 # Setup a celery processor for haystack index updates.
 HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 
+GRAPPELLI_ADMIN_TITLE = "R/a/dio admin panel"
 
 import os
 import sys

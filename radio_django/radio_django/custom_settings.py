@@ -12,10 +12,22 @@ TIME_ZONE = 'Europe/Amsterdam'
 
 #STATIC_ROOT = 'static'
 
+import os.path
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+from settings import STATICFILES_DIRS
+STATICFILES_DIRS += (
+    os.path.join(PROJECT_ROOT, "..", "static"),
+)
+
 from settings import MIDDLEWARE_CLASSES
 MIDDLEWARE_CLASSES += (
     #'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'audit_log.middleware.UserLoggingMiddleware',
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.core.context_processors.request',
+    'django.contrib.auth.context_processors.auth',
 )
 
 from settings import TEMPLATE_DIRS
@@ -31,8 +43,10 @@ TEMPLATE_LOADERS += (
 from settings import INSTALLED_APPS
 INSTALLED_APPS += (
     'grappelli',
+    #'bootstrap_admin',
     'django.contrib.admin',
     'django.contrib.admindocs',
+    'sitetree',
     'south',
     'haystack',
     'djcelery',
