@@ -1,0 +1,14 @@
+{% load sitetree %}
+<ul class="dropdown-menu">
+    {% for item in sitetree_items %}
+        {% if "divider" in item.hint %}
+            <li class="divider"></li>
+        {% elif "header" in item.hint %}
+            <li class="nav-header">{{ item.title }}</li>
+        {% else %}
+            <li {% if item.is_current or item.in_current_branch %}class="active"{% endif %}>
+            <a href="{% sitetree_url for item %}" {% if item.hint %}title="{{ item.hint }}"{% endif %}>{% if item.hint|lower|slice:':4' == "icon" %}<i class="{{ item.hint }}"></i> {% endif %}{{ item.title_resolved }}</a>
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>
