@@ -30,6 +30,9 @@ def generate_music_filename_field(instance, original_filename):
     Gives out a proper filename for saving music files with a FileField.
 
     You can give this function as argument to a FileFields `upload_to`.
+
+    .. note:
+        This also sets the `original_filename` attribute on the instance.
     """
 
     instance.original_filename = original_filename
