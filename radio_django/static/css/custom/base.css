@@ -1,0 +1,39 @@
+/* This is the base stylesheet, we add small tweaks and
+ * corrections to bootstrap here. */
+
+/* This is to fix the icons showing up slightly lower than
+ * the text next to it. It only applies it to the navigation
+ * bar class to avoid other icons getting misplaced */
+.nav [class^="icon-"], .nav [class*=" icon-"] {
+    margin-top: 0px;
+}
+
+/* This removes a large white-space next to our dj image,
+ * the margin causes the image to resize too quickly.
+ *
+@media (min-width: 1200px) {
+    #dj-image .thumbnails > li {
+        margin-left: 0px;
+    }
+}*/
+
+#dj-image h3 {
+    line-height: 20px;
+}
+
+/* This sets our main container div to be fixed in the middle with a maximum-size,
+ * otherwise the fluid container will show up on the far-left of the page no
+ * matter what.  */
+.container-fixed {
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 1170px;
+}
+
+#dj-image .thumbnails > li {
+    float: none;
+}
+
+.center-text {
+    text-align: center;
+}
