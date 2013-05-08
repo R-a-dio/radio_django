@@ -1,14 +1,108 @@
 {% extends "radio_base.html" %}
+{% load staticfiles %}
+{% load thumbnail %}
 
 {% comment %}
     Receives the following special variables:
-        lastplayed: The last 10 `Played` entries, limit it yourself for smaller amounts
+        played: The last 10 `Played` entries, limit it yourself for smaller amounts
         queue: The 10 top `Queue`d entries for the active DJ, limit same as lastplayed
         current: A `Songs` object of the currently playing song. Can be None if stream is down.
-        current_dj: A `Djs` object of the currently live DJ.
+        current_dj: A `Djs` object of the currently live DJ. This will be a stripped down dict
+                    with only the "name" and "image.url" attributes set if no DJ is found.
         news: The 3 latest `News` objects.
 {% endcomment %}
 
 {% block content %}
-    Empty
+    <div id="playing" class="row-fluid well">
+        <div class="span2 hidden-phone">
+            <img src="{% static "img/logo/small.png" %}" alt="R/a/dio Logo">
+        </div>
+        <div class="span8">
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="row-fluid">
+                        <div id="playing-song" class="span12">
+                            <h2 class="center-text">{% if current %}{{ current.metadata }}{% else %}Stream is offline.{% endif %}</h2>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div id="playing-progress" class="span12">
+                            <div class="progress">
+                                <div class="bar" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="playing-info" class="row-fluid">
+                        <div class="span4 center-text" id="playing-listeners">Listeners: 0</div>
+                        <div class="span8 center-text" id="playing-position">00:00/00:00</div>
+                    </div>
+                    <div id="stream-links" class="row-fluid well">
+                        <div class="span4">
+                            <a class="btn" href="{% static "playlists/main.mp3.m3u" %}">Playlist File (.m3u)</a>
+                        </div>
+                        <div class="span4">
+                            <a class="btn" href="{% static "playlists/listen.pls" %}">Playlist File (.pls)</a>
+                        </div>
+                        <div class="span4">
+                            <a class="btn" href="{{ stream_url }}">Direct Stream Link</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="dj-image" class="span2 hidden-phone">
+            <a href="{{ current_dj.get_absolute_url }}">
+                {% thumbnail current_dj.image "150x150" format="PNG" as im %}
+                    <img class="img-polaroid" src="{{ im.url }}" alt="DJ Image" width="{{ im.x }}" height="{{ im.y }}">
+                {% endthumbnail %}
+                <div id="dj-name" class="center-text">{{ current_dj.name }}</div>
+            </a>
+        </div>
+    </div>
+
+    <div id="playlist" class="row-fluid hidden-phone well">
+        {% if played and queue %}
+            <div class="span6">
+                <div class="row-fluid">
+                    <div class="span12">
+                        <h3 class="center-text">Played recently</h3>
+                    </div>
+                </div>
+                {% include "radio/playlist.html" with iterator=played prefix="played" limit=":5" %}
+            </div>
+            <div class="span6">
+                <div class="row-fluid">
+                    <div class="span12">
+                        <h3 class="center-text">Next up</h3>
+                    </div>
+                </div>
+                {% include "radio/playlist.html" with iterator=queue prefix="queue" limit=":5" %}
+            </div>
+        {% elif played or queue %}
+            <div class="span12">
+                <div class="row-fluid">
+                    <div class="span12">
+                        <h3 class="center-txt">{% if played %}Played recently{% else %}Next up{% endif %}</h3>
+                    </div>
+                </div>
+                {% include "radio/playlist.html" with iterator=queue prefix="queue" limit=":5" %}
+                {% include "radio/playlist.html" with iterator=played prefix="played" limit=":5" %}
+            </div>
+        {% else %}
+            <div class="span12">
+                <h3 class="center-text">No playlist information available at the moment.</h3>
+            </div>
+        {% endif %}
+    </div>
 {% endblock content %}
+
+{% block extra-javascript %}
+<script src="{% static "js/bigtext.js" %}"></script>
+<script type="text/javascript">
+    $("#playing-song").bigtext({
+        childSelector: '> h2',
+        maxfontsize: 48
+    });
+    $("#dj-name").bigtext();
+</script>
+{% endblock extra-javascript %}

@@ -8,14 +8,9 @@
     margin-top: 0px;
 }
 
-/* This removes a large white-space next to our dj image,
- * the margin causes the image to resize too quickly.
- *
-@media (min-width: 1200px) {
-    #dj-image .thumbnails > li {
-        margin-left: 0px;
-    }
-}*/
+body {
+    background: #f5f5f5 url("/static/img/ice.jpg");
+}
 
 #dj-image h3 {
     line-height: 20px;
@@ -30,10 +25,8 @@
     max-width: 1170px;
 }
 
-#dj-image .thumbnails > li {
-    float: none;
-}
-
 .center-text {
     text-align: center;
 }
+
+
