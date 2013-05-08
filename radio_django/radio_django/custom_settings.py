@@ -43,9 +43,9 @@ TEMPLATE_LOADERS += (
 from settings import INSTALLED_APPS
 INSTALLED_APPS += (
     'grappelli',
-    #'bootstrap_admin',
     'django.contrib.admin',
     'django.contrib.admindocs',
+    'sorl.thumbnail',
     'sitetree',
     'south',
     'haystack',
