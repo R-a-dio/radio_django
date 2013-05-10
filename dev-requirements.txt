@@ -1,0 +1,3 @@
+django-debug-toolbar-template-timings==0.3
+django-debug-toolbar==0.9.4
+django-haystack-panel==0.1.3
