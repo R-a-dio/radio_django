@@ -43,4 +43,4 @@ nosetests.xml
 radio_django/static/media
 
 # Compiled LESS files
-radio_django/static/less/*.css
+radio_django/static/less/default/*.css
