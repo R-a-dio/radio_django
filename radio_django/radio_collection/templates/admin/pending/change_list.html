@@ -1,0 +1,104 @@
+{% extends "admin/change_list.html" %}
+
+<!-- LOADING -->
+{% load url from future %}
+{% load admin_list i18n grp_tags %}
+
+<!-- CONTENT -->
+{% block content %}
+    {% if cl.search_fields or cl.has_filters or cl.date_hierarchy %}
+        <div class="grp-module">
+            <div class="grp-row">
+                <div class="l-2cr-fluid {% if cl.has_filters and cl.search_fields %}l-d-12{% else %}{% if cl.has_filters or cl.search_fields %}l-d-6{% endif %}{% endif %}">
+                    {% if cl.has_filters or cl.search_fields %}
+                        {% block aside %}
+                            {{ block.super }}
+                        {% endblock %}
+                    {% endif %}
+                    {% block pagination_top %}
+                        {{ block.super }}
+                    {% endblock %}
+
+                </div>
+            </div>
+            <!-- DATE HIERARCHY -->
+            {% block date_hierarchy %}
+                {{ block.super }}
+            {% endblock %}
+        </div>
+    {% endif %}
+    <div id="grp-changelist-form">
+        <section id="grp-changelist" class="grp-editable">
+            <div id="result_list">
+                {% for form in form_set %}
+                    <form action="" method="post">
+                        {{ form.as_p }}
+                    </form>
+                {% endfor %}
+            </div>
+            <table id="result_list" class="grp-sortable" cellspacing="0">
+                <thead>
+                    <tr>
+                        {% for field in form_set|first %}
+                            <th scope="col">
+                                <div class="grp-text">
+                                    <span>{{ field.label|capfirst }}</span>
+                                </div>
+                            </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for form in form_set %}
+                        <tr class="grp-row {% cycle 'grp-row-even' 'grp-row-odd' %}">
+                            <form action="" method="post">
+                                {% for item in form %}
+                                    <td>{{ item }}</td>
+                                {% endfor %}
+                            </form>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </div>
+    {% comment %}
+    <form id="grp-changelist-form" action="" method="post"{% if cl.formset.is_multipart %} enctype="multipart/form-data"{% endif %}>{% csrf_token %}
+        <section id="grp-changelist" class="{% if cl.list_editable %} grp-editable{% endif %}">
+            <header style="display:none"><h1>Results</h1></header>
+            <!-- POPUP -->
+            {% if is_popup %}<input type="hidden" name="_popup" value="1" />{% endif %}
+            <!-- ERRORS -->
+            {% if cl.formset.errors %}
+                <p class="errornote">
+                    {% blocktrans count cl.formset.errors|length as counter %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
+                </p>
+                {{ cl.formset.non_form_errors }}
+            {% endif %}
+            <!-- MANAGEMENT FORM -->
+            {% if cl.formset %}
+                {{ cl.formset.management_form }}
+            {% endif %}
+            <!-- CHANGELIST-RESULTS -->
+            {% block result_list %}
+                {% result_list cl %}
+            {% endblock %}
+        </section>
+        <!-- PAGINATION BOTTOM -->
+        {% if not cl.result_count == 0 %}
+            {% block pagination_bottom %}
+                {{ block.super }}
+            {% endblock %}
+        {% endif %}
+        <!-- SUBMIT ROW -->
+        {% if cl.formset or action_form %}
+            <footer id="submit" class="grp-module grp-submit-row grp-fixed-footer">
+                <header style="display:none"><h1>Submit Options</h1></header>
+                <ul>
+                    {% if action_form %}<li class="grp-float-left grp-changelist-actions">{% admin_actions %}</li>{% endif %}
+                    {% if cl.formset %}<li><input type="submit" class="grp-button grp-default" name="_save" value="{% trans "Save" %}"/></li>{% endif %}
+                </ul>
+            </footer>
+        {% endif %}
+    </form>{% endcomment %}
+{% endblock %}

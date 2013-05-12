@@ -1,0 +1,60 @@
+{% extends "radio/base.html" %}
+
+{% load time_extras %}
+
+{% block content %}
+    {% include "pagination.html" %}
+    <div id="search">
+        <div id="search-head" class="row-fluid">
+            <div class="span1 table-head hidden-phone">
+                ID
+            </div>
+            <div class="span6 table-head hidden-phone">
+                Artist - Title
+            </div>
+            <div class="span11 table-head visible-phone">
+                Artist - Title
+            </div>
+            <div class="span2 table-head hidden-phone">
+                Last played
+            </div>
+            <div class="span2 table-head hidden-phone">
+                Last requested
+            </div>
+            <div class="span1 table-head">
+                Request
+            </div>
+        </div>
+        
+        <div class="row-fluid">
+            <div id="search-results" class="span12">
+            {% for result in page %}
+            <div class="search-result-row" class="row-fluid">
+                <div class="span1 search-result-id hidden-phone">
+                    {{ result.object.id }}
+                </div>
+                <div class="span6 search-result-metadata hidden-phone">
+                    {{ result.object.metadata }}
+                </div>
+                <div class="span11 search-result-metadata visible-phone">
+                    {{ result.object.metadata }}
+                </div>
+                <div class="span2 search-result-played hidden-phone">
+                    {{ result.last_played|search_time_format }}
+                </div>
+                <div class="span2 search-result-requested hidden-phone">
+                    {{ result.last_requested|search_time_format }}
+                </div>
+                <div class="span1 search-result-form">
+                    <form method="POST" action="/request/" name="requestform">
+                        <input type="hidden" value="{{ result.object.id }}" name="songid">
+                        <input class="btn btn-success" type="submit" value="Request">
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        </div>
+    </div>
+    {% include "pagination.html" %}
+{% endblock content %}

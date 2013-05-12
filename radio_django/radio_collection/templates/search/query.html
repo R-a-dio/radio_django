@@ -30,15 +30,7 @@
             </tr>
             {% endfor %}
         </tbody>
-        {% if page.has_previous or page.has_next %}
-            {% if page.has_previous %}
-            <a href="?q={{ query }}&page={{ page.previous_page_number }}">Previous</a>
-            {% endif %}
-            |
-            {% if page.has_next %}
-            <a href="?q={{ query }}&page{{ page.next_page_number }}">Next</a>
-            {% endif %}
-        {% endif %}
+        {% include "pagination.html" %}
     {% else %}
         {% for object in latest_additions %}
         <tr>

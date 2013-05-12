@@ -13,7 +13,7 @@ def divider(parent):
                 url="placeholder")
 
 
-tree, created = Tree.objects.get_or_create(title='radio_tree', alias='radio_tree')
+tree, created = Tree.objects.get_or_create(alias='radio_tree')
 
 tree_items = [
     dict(title="News", hint="icon-globe", url="radio-news"),

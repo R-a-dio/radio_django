@@ -8,5 +8,10 @@
 {% block page_name %}submit_page{% endblock page_name %}
 
 {% block content %}
-    Empty
+    <form action="/submit/" method="post"
+        {% if form.is_multipart %}enctype="multipart/form-data"{% endif %}>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit" />
+    </form>
 {% endblock content %}
