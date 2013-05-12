@@ -10,6 +10,6 @@ def retrieve_current_dj():
     """
     dj_id = cache.get("radio_current_dj")
     if dj_id is None:
-        return None
+        return Djs.objects.get(name="None")
     return Djs.objects.get(pk=dj_id)
 
