@@ -1,79 +1,43 @@
 Installation Requirements
 =========================
 
-Before we begin, it is highly recommended you install inside a `virtualenv`. If you don't want to have too much trouble installing `xapian` mentioned below, we suggest to use `virtualenv --system-site-packages` since the `xapian-bindings` will install into the system site packages by default.
+The following packages are required to install the project:
 
-The following list of programs should be installed after running the `setup.py` included.
+`apt-get install python-dev libpq-dev libjpeg62-dev`
 
-Xapian
-------
-You currently have to install `xapian` by yourself before installing this project. This includes all the requirements to use it from Python. The following needs to be installed.
 
-`xapian-core`, `xapian-bindings` (at least Python ones), `xapian-haystack` from github and `django-haystack` from github. We are using the latest versions of the last two that don't have a pip package yet. To install them you can issue the following two commands:
+Search functionality
+--------------------
 
-`pip install -e git+https://github.com/toastdriven/django-haystack.git@master#egg=django-haystack`
-`pip install -e git+https://github.com/notanumber/xapian-haystack.git@master#egg=xapian-haystack`
+If you want to use search functionality you have to install a search engine for use by haystack. For more information about this you can look at the [documentation](https://django-haystack.readthedocs.org/en/latest/installing_search_engines.html) of haystack itself.
 
 Database
 --------
 
-The below configuration example, and the setup.py both assume you are using `postgresql` as the database. Using another database is possible and you should adjust the settings towards that.
-
-
-Installation
-============
-
-You have to create your own `local_settings.py` in `/radio_django/radio_django/radio_django/local_settings.py` (Don't you love that long path.), it should contains the following template with your own relevant info filled in.
-
-
-    # Local Settings - Settings that are specific to a development environment (
-    # e.g. DATABASES, INTERNAL_IPS, INSTALLED_APPS, etc.)
-    
-    # The database to use, see django database setup for more info.
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': '',
-            'USER': '',
-            'PASSWORD': '',
-        }
-    }
-
-    # Extra settings for haystack searching. See haystack docs (version 2.0+).
-    HAYSTACK_CONNECTIONS = {
-    	'default': {
-    		'ENGINE': 'haystack.backends.xapian_backend.XapianEngine',
-    		'PATH': '',
-    	},
-    }
-    
-    # The broker URL used by celery.
-    BROKER_URL = ''
-
-    # INTERNAL_IPS = ('127.0.0.1',)
-
-    from custom_settings import INSTALLED_APPS
-    INSTALLED_APPS += (
-        #'debug_toolbar',
-    )
-
+The database used for development isn't very important and you can get by with using `sqlite3`. For database setup we point you towards the Django documentation on [database setup](https://docs.djangoproject.com/en/1.5/topics/install/#database-installation)
 
 Celery
 ------
 
-Celery requires a message broker to be installed. We suggest using RabbitMQ, instructions can be found [here](http://docs.celeryproject.org/en/latest/getting-started/brokers/rabbitmq.html) and on their own website. Don't forget to set the `BROKER_URL` in `local_settings.py`.
+Celery requires a message broker to be installed. We suggest using RabbitMQ, instructions can be found at the [celery project documentation](http://docs.celeryproject.org/en/latest/getting-started/brokers/rabbitmq.html) Don't forget to set the `BROKER_URL` in `local_settings.py`.
 
+Settings
+--------
 
-Database Table creation
------------------------
+For development you will want to copy `radio_django/production_settings.py` to `radio_django/local_settings.py`. 
 
-We use the excellent Django South app for migrating schemas around. We have a small problem with a circular dependency though so you have to run the following commands in order for it to work without errors. Don't forget to first run the usual `manage.py syncdb` before the migrations.
+For production you will want to edit `radio_django/production_settings.py` and set the `PRODUCTION` environmental variable to `true`.
 
-    manage.py migrate radio_collection 0001
-    manage.py migrate radio_users 0001
-    manage.py migrate radio_stream 0001
-    # At this point we have walked around the dependency problem and we can do just a full migrate.
-    manage.py migrate
+Database initializing
+---------------------
 
+To finish up you need to run the following management commands for Django
 
+`manage.py syncdb`
+`manage.py migrate`
+
+Running the server
+==================
+
+For development you can simple do a `manage.py runserver`. For all other uses you should really take a look at the django documentation for deployment.
 
