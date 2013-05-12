@@ -1,0 +1,27 @@
+{% load pagination_url %}
+{% if not page.paginator.page_range %}
+<ul class="pager">
+    <li class="previous {% if not page.has_previous %}disabled{% endif %}">
+        <a href="{% if page.has_previous %}{{ page.previous_page_number|page_url:request }}{% else %}#{% endif %}">&larr; Previous</a>
+    </li>
+    <li class="next {% if not page.has_next %}disabled{% endif %}">
+        <a href="{% if page.has_next %}{{ page.next_page_number|page_url:request }}{% else %}#{% endif %}">&larr; Next</a>
+    </li>
+</ul>
+{% else %}
+<div class="pagination pagination-centered">
+    <ul>
+        <li class="{% if not page.has_previous %}disabled{% endif %}">
+            <a href="{% if page.has_previous %}{{ page.previous_page_number|page_url:request }}{% else %}#{% endif %}">&laquo;</a>
+        </li>
+        {% for page_nr in page.paginator.page_range %}
+            <li class="{% if page_nr == page.number %}active{% endif %}">
+            <a href="{{ page_nr|page_url:request }}">{{ page_nr }}</a>
+            </li>
+        {% endfor %}
+        <li class="{% if not page.has_next %}disabled{% endif %}">
+            <a href="{% if page.has_next %}{{ page.next_page_number|page_url:request }}{% else %}#{% endif %}">&raquo;</a>
+        </li>
+    </ul>
+</div>
+{% endif %}
