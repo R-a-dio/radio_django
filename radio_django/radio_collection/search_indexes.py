@@ -10,6 +10,12 @@ class TrackIndex(CelerySearchIndex, indexes.Indexable):
     def get_model(self):
         return Tracks
 
+    def get_query_set(self):
+        return super(TrackIndex, self).get_query_set().select_related()
+
+    def read_queryset(self, using=None):
+        return Tracks.objects.all().select_related('artist')
+
 
 def reindex_related(instance, **kwargs):
     index = kwargs.get('track_index', TrackIndex())
