@@ -1,9 +1,15 @@
-Installation Requirements
-=========================
+Installation
+============
 
 The following packages are required to install the project:
 
 `apt-get install python-dev libpq-dev libjpeg62-dev`
+
+then you can do the following to install all the required python dependencies:
+
+`pip install -r requirements.txt`
+
+Extra functionality or preferences might require extra packages to be installed.
 
 
 Search functionality

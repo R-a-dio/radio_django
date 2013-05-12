@@ -10,7 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'Faves.song'
         db.add_column(u'radio_users_faves', 'song',
-                      self.gf('django.db.models.fields.related.ForeignKey')(default=None, to=orm['radio_stream.Songs']),
+                      self.gf('django.db.models.fields.related.ForeignKey')(null=True, default=None, to=orm['radio_stream.Songs']),
                       keep_default=False)
 
         # Adding unique constraint on 'Faves', fields ['user', 'song']
