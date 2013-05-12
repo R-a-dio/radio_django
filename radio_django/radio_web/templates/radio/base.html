@@ -9,10 +9,7 @@
     <meta name="keywords" content="japan,music,anime,radio,r/a/dio,r-a-dio,stream,anison,日本,アニソン" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% compressed_css 'radio_css' %}
-    <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.min.css" %}">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
-    {% compressed_js 'radio_js' %}
-    <script type="text/javascript" src="{% static "js/bootstrap.min.js" %}"></script>
 </head>
 <body>
     {% block topbar %}
@@ -29,7 +26,7 @@
                     </a>
                     <div class="nav-collapse collapse">
                         {% sitetree_menu from "radio_tree" include "trunk" template "menu/menu_bootstrap.html" %}
-                       <form id="search" class="navbar-form pull-right" action="/search/">
+                       <form id="search-form" class="navbar-form pull-right" action="/search/">
                             <span class="control-group">
                                 <span class="controls">
                                     <span class="input-prepend" style="margin-bottom: 0px">
@@ -53,7 +50,7 @@
         {% block content %}
         {% endblock content %}
     </div>
-    {% block extra-javascript %}
-
+    {% block javascript %}
+        {% compressed_js 'radio_js' %}
     {% endblock %}
 </body>
