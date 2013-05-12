@@ -1,9 +1,11 @@
 {% load time_extras %}
-<div class="row-fluid">
-    <div class="span12">
-        <h3 class="text-center">{{ title }}</h3>
+{% if iterator %}
+    <div class="row-fluid">
+        <div class="span12">
+            <h3 class="text-center">{{ title }}</h3>
+        </div>
     </div>
-</div>
+{% endif %}
 {% for item in iterator|slice:limit %}
 <div class="row-fluid {{ prefix }}">
     <div class="span2 center-text {{ prefix }}-time">
