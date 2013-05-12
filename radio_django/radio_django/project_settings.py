@@ -1,14 +1,15 @@
 # Project Settings - Settings that don't exist in settings.py that you want to
 # add (e.g. USE_THOUSAND_SEPARATOR, GRAPPELLI_ADMIN_TITLE, CELERYBEAT_SCHEDULER,
 # CELERYD_PREFETCH_MULTIPLIER, etc.)
+from settings import DEBUG
 
 #USE_THOUSAND_SEPARATOR = True
 
 PIPELINE_CSS = {
     "radio_css": {
         'source_filenames': (
-            "css/custom/*.less",
-            "css/custom/*.css",
+            "less/default/base.less",
+            "css/default/*.css",
         ),
         "output_filename": 'css/radio.css',
     },
@@ -17,11 +18,24 @@ PIPELINE_CSS = {
 PIPELINE_JS = {
     "radio_js": {
         'source_filenames': (
+            "js/bootstrap.js",
             "js/custom/*.js",
         ),
         "output_filename": 'js/radio.js',
     },
 }
+
+if DEBUG:
+    PIPELINE_JS['radio_js']['source_filenames'] += ("js/dev/less.min.js",)
+
+print PIPELINE_JS
+
+PIPELINE_COMPILERS = tuple()
+
+if not DEBUG:
+    PIPELINE_COMPILERS = (
+        'pipeline.compilers.less.LessCompiler',
+    )
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
