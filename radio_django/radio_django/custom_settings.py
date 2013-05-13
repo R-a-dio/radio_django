@@ -47,6 +47,7 @@ INSTALLED_APPS += (
     'django.contrib.admin',
     'django.contrib.admindocs',
     'sorl.thumbnail',
+    'gunicorn',
     'pipeline',
     'sitetree',
     'south',
