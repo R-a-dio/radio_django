@@ -38,6 +38,7 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+.ropeproject/
 
 # Media files
 radio_django/static/media
