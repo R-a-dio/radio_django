@@ -112,13 +112,13 @@ class Tracks(models.Model):
 
     def last_played(self):
         try:
-            return self.played_set.latest("time")
+            return self.plays.latest("time")
         except Played.DoesNotExist:
             return None
 
     def last_requested(self):
         try:
-            return self.requests_set.latest('time')
+            return self.requests.latest('time')
         except Requests.DoesNotExist:
             return None
 
@@ -153,7 +153,8 @@ class Played(models.Model):
     time = models.DateTimeField(null=True, blank=True, db_index=True,
                                 help_text="Time of playback start.",
                                 auto_now_add=True)
-    track = models.ForeignKey(Tracks, help_text="The track played.")
+    track = models.ForeignKey(Tracks, help_text="The track played.",
+                              related_name="plays")
 
     user = models.ForeignKey(User,
                         help_text="The user responsible for this playback.")
@@ -166,7 +167,8 @@ class Requests(models.Model):
     time = models.DateTimeField(db_index=True,
                                 help_text="When did this get requested.")
 
-    track = models.ForeignKey(Tracks, help_text="The track requested.")
+    track = models.ForeignKey(Tracks, help_text="The track requested.",
+                              related_name="requests")
 
     identifier = models.CharField(max_length=150, db_index=True,
                                   help_text="Identifier of this request,"

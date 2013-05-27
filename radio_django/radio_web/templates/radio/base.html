@@ -31,7 +31,7 @@
                                 <span class="controls">
                                     <span class="input-prepend" style="margin-bottom: 0px">
                                         <span class="add-on"><i class="icon-search"></i></span>
-                                        <input class="span3 search" type="text" name="q" autocomplete="off" placeholder="Search library">
+                                        <input class="span3 search" type="text" name="q" autocomplete="off" placeholder="Search library"{% if search_query %} value="{{ search_query }}"{% endif %}>
                                     </span>
                                 </span>
                             </span>

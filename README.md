@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/Wessie/radio_django.png)](https://travis-ci.org/Wessie/radio\_django)
+[![codeq](https://codeq.io/github/Wessie/radio_django/badges/master.png)](https://codeq.io/github/Wessie/radio\_django/branches/master)
+
+
 Installation
 ============
 

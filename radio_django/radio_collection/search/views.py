@@ -1,6 +1,8 @@
 import collections
 import string
 
+from django.db.models import Max
+
 from endless_pagination.decorators import page_template
 
 from haystack.views import SearchView
@@ -35,7 +37,12 @@ class TrackSearchView(SearchView):
         return None, self.results
 
     def extra_context(self):
-        latest = Tracks.objects.all().order_by('-id')[:RESULTS_PER_PAGE]
+        latest = Tracks.objects.all()
+        latest = latest.order_by('-id')
+        latest = latest.annotate(last_played=Max('plays__time'),
+                                 last_requested=Max('requests__time'))
+        latest = latest.select_related('artist')
+        latest = latest[:RESULTS_PER_PAGE]
         latest = wrap_in_object(latest)
 
         context = {
