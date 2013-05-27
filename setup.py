@@ -21,5 +21,6 @@ setup(
         "django-sitetree",
         "sorl-thumbnail",
         "django-pipeline",
+        "django-endless-pagination",
         ],
 )

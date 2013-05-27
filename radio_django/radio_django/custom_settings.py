@@ -56,6 +56,7 @@ INSTALLED_APPS += (
     'celery_haystack',
     'tastypie',
     'reversion',
+    'endless_pagination',
     'radio_news',
     'radio_stream',
     'radio_collection',
