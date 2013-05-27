@@ -1,0 +1,9 @@
+{% load endless %}
+
+{% paginate fave_objects %}
+
+{% for entry in fave_objects %}
+    {{ entry.song.metadata }}
+{% endfor %}
+
+{% show_pages %}

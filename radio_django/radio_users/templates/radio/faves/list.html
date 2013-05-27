@@ -1,4 +1,4 @@
-{% extends "radio_base.html" %}
+{% extends "radio/base.html" %}
 
 {% comment %}
     Receives the following context variables:
@@ -9,6 +9,6 @@
 {% block page_name %}faves_list_page{% endblock page_name %}
 
 {% block content %}
-    Empty
+    {% include page_template %}
 {% endblock content %}
 
