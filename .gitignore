@@ -41,7 +41,7 @@ nosetests.xml
 .ropeproject/
 
 # Media files
-radio_django/static/media
+src/static/media/
 
 # Compiled LESS files
-radio_django/static/less/default/*.css
+src/static/less/default/*.css

@@ -7,8 +7,8 @@ install:
   - pip install https://github.com/dcramer/pyflakes/tarball/master
   - pip install -q -e . --use-mirrors
 before_script:
-  - "pep8 --exclude=migrations --ignore=E501,E225,W292 radio_django"
-  - pyflakes -x W radio_django
+  - "pep8 --exclude=migrations --ignore=E501,E225,W292 src"
+  - pyflakes -x W src
 script:
   - python setup.py test
 
