@@ -31,4 +31,4 @@ sorl-thumbnail==11.12
 South==0.7.6
 tornado==3.0.1
 verlib==0.1
-mutagen=1.21
+mutagen==1.21
