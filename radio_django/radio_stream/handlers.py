@@ -1,11 +1,15 @@
 from haystack.query import SearchQuerySet
-from radio_django.api import container
-from radio_stream.models import Songs
+
 from django.conf.urls import url
 from django.http import Http404
 from django.core.paginator import Paginator, InvalidPage
+
 from tastypie.resources import ModelResource
 from tastypie.utils import trailing_slash
+
+from radio_django.api import container
+from radio_stream.models import Songs
+
 
 class SongResource(ModelResource):
     class Meta:
@@ -17,7 +21,10 @@ class SongResource(ModelResource):
 
     def prepend_urls(self):
         return [
-            url(r'^(?P<resource_name>%s)/search%s$' % (self._meta.resource_name, trailing_slash()),
+            url(r'^(?P<resource_name>%s)/search%s$' % (
+                self._meta.resource_name,
+                trailing_slash()
+                ),
                 self.wrap_view('get_search'),
                 name="api_song_search"),
         ]
@@ -27,7 +34,9 @@ class SongResource(ModelResource):
         self.is_authenticated(request)
         self.throttle_check(request)
 
-        sqs = SearchQuerySet().models(Songs).load_all().auto_query(request.GET.get('q', ''))
+        sqs = SearchQuerySet().models(Songs).load_all()
+        sqs = sqs.auto_query(request.GET.get('q', ''))
+
         paginator = Paginator(sqs, 20)
 
         try:

@@ -12,22 +12,35 @@ class Djs(models.Model):
     class Meta:
         verbose_name = 'dj'
 
-    name = models.CharField(max_length=45, help_text="Public name to be shown for this DJ.")
+    name = models.CharField(
+        max_length=45,
+        help_text="Public name to be shown for this DJ."
+    )
 
-    description = models.TextField(blank=True,
-                                    help_text="A description to shown on the staff page.")
+    description = models.TextField(
+        blank=True,
+        help_text="A description to shown on the staff page."
+    )
 
-    visible = models.BooleanField(default=False, help_text="Visibility on the staff page.")
+    visible = models.BooleanField(
+        default=False,
+        help_text="Visibility on the staff page."
+    )
 
-    priority = models.IntegerField(default=0,
-                    help_text="The number we sort by on the staff page, higher means closer to the top.")
+    priority = models.IntegerField(
+        default=0,
+        help_text="The number we sort by on the staff page, "
+        "higher means closer to the top."
+    )
 
     user = models.OneToOneField(User, related_name='dj_account')
 
     image = models.ImageField(upload_to='djs/img')
 
     def get_absolute_url(self):
-        return reverse('radio_users.staff.views.detail', kwargs={'user': self.name.lower()})
+        return reverse('radio_users.staff.views.detail',
+                       kwargs={'user': self.name.lower()})
+
 
 class Nicknames(models.Model):
     """
@@ -39,19 +52,26 @@ class Nicknames(models.Model):
     class Meta:
         verbose_name = 'nickname'
 
-    passcode = models.CharField(max_length=8, null=True,
-                                help_text="A small passcode used for website/irc linking.")
+    passcode = models.CharField(
+        max_length=8,
+        null=True,
+        help_text="A small passcode used for website/irc linking."
+    )
 
 
 class Names(models.Model):
     """
-    A Names entry is a IRC nickname, grouping is facilitated by linking to a non-unique
-    Nicknames model above.
+    A Names entry is a IRC nickname, grouping is facilitated by linking to
+    a non-unique Nicknames model above.
     """
     class Meta:
         verbose_name = 'name'
 
-    name = models.CharField(max_length=30, unique=True, help_text="Name used on IRC.")
+    name = models.CharField(
+        max_length=30,
+        unique=True,
+        help_text="Name used on IRC."
+    )
 
     nickname = models.ForeignKey(Nicknames)
 
@@ -65,7 +85,10 @@ class Faves(models.Model):
     time = models.DateTimeField(null=True, blank=True, db_index=True,
                                 help_text="When was this faved.")
 
-    song = models.ForeignKey('radio_stream.Songs', help_text="The song faved.")
+    song = models.ForeignKey(
+        'radio_stream.Songs',
+        help_text="The song faved."
+    )
 
     user = models.ForeignKey(Names, help_text="The user that faved this.")
 
@@ -76,17 +99,24 @@ class Faves(models.Model):
 
 class Uploads(models.Model):
     """
-    All known music track submissions get a corrosponding entry in this table. This is used
-    for rate-limiting and as a history of any ones uploads.
+    All known music track submissions get a corrosponding entry in this table.
+    This is used for rate-limiting and as a history of any ones uploads.
     """
     class Meta:
         verbose_name = "upload"
 
-    identifier = models.CharField(max_length=120,
-            help_text="A unique identifier to check against. (I.E IP Address, IRC Hostmask)")
+    identifier = models.CharField(
+        max_length=120,
+        help_text="A unique identifier to check against. "
+        "(I.E IP Address, IRC Hostmask)"
+    )
 
-    upload = models.ForeignKey(Collection,
-            help_text="The track that got uploaded.")
+    upload = models.ForeignKey(
+        Collection,
+        help_text="The track that got uploaded."
+    )
 
-    time = models.DateTimeField(auto_now_add=True,
-            help_text="The time this was uploaded.")
+    time = models.DateTimeField(
+        auto_now_add=True,
+        help_text="The time this was uploaded."
+    )

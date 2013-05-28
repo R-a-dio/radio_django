@@ -20,5 +20,3 @@ class QueueAdmin(RadioAdmin):
 
 
 admin.site.register(Queue, QueueAdmin)
-
-

@@ -1,7 +1,8 @@
 from haystack import indexes
 from celery_haystack.indexes import CelerySearchIndex
-from radio_stream.models import Songs
 from django.db.models import signals
+
+from radio_stream.models import Songs
 
 
 class SongIndex(CelerySearchIndex, indexes.Indexable):
@@ -9,6 +10,7 @@ class SongIndex(CelerySearchIndex, indexes.Indexable):
 
     def get_model(self):
         return Songs
+
 
 def reindex_song(sender, instance, **kwargs):
     index = SongIndex()

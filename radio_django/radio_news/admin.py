@@ -6,7 +6,7 @@ from radio_django.admin import RadioAdmin
 class NewsAdmin(RadioAdmin):
     exclude = ('poster',)
     prepopulated_fields = {'slug': ('title',)}
-    
+
     auto_user_field = 'poster'
 
 

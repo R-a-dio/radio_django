@@ -7,11 +7,13 @@ import random
 
 salt = string.letters + string.digits
 
+
 def generate_music_filename(filename):
     """
     Generates a filename that is 15 random chars + `extension` given.
 
-    This is used to avoid having a 'too public' approachable database of our music files.
+    This is used to avoid having a 'too public' approachable database of
+    our music files.
     """
     pepper = ''.join(random.choice(salt) for _ in range(15))
 
@@ -39,4 +41,8 @@ def generate_music_filename_field(instance, original_filename):
 
     new_filename = generate_music_filename(original_filename)
 
-    return os.path.join(settings.SUBMISSION_FILE_PATH, new_filename[:4], new_filename)
+    return os.path.join(
+        settings.SUBMISSION_FILE_PATH,
+        new_filename[:4],
+        new_filename
+    )

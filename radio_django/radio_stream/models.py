@@ -7,13 +7,16 @@ class Songs(models.Model):
     """
     Table that keeps track of songs played by DJs
     """
-    hash = models.CharField(unique=True, max_length=45, help_text="SHA1 hash of the metadata string.")
+    hash = models.CharField(unique=True, max_length=45,
+                            help_text="SHA1 hash of the metadata string.")
 
-    metadata = models.TextField(help_text="The actual metadata send by the DJ")
+    metadata = models.TextField(help_text="The actual metadata"
+                                          "send by the DJ")
 
-    songid = models.ForeignKey('self', null=True, blank=True)  
+    songid = models.ForeignKey('self', null=True, blank=True)
 
-    length = models.IntegerField(help_text="The length of this song.", null=True, blank=True)
+    length = models.IntegerField(help_text="The length of this song.",
+                                 null=True, blank=True)
 
     def __unicode__(self):
         return self.hash
@@ -31,7 +34,8 @@ class Played(models.Model):
 
     song = models.ForeignKey(Songs, help_text="The song played.")
 
-    user = models.ForeignKey(Djs, help_text="The user that played this on stream.")
+    user = models.ForeignKey(Djs,
+                             help_text="The user that played this on stream.")
 
 
 class Queue(models.Model):
@@ -39,5 +43,5 @@ class Queue(models.Model):
 
     song = models.ForeignKey(Songs, help_text="The song queued.")
 
-    time = models.DateTimeField(db_index=True, help_text="The estimated time of playing.")
-
+    time = models.DateTimeField(db_index=True,
+                                help_text="The estimated time of playing.")

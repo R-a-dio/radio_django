@@ -1,5 +1,5 @@
-# Production Settings - Settings that are specific to a production environment (
-# e.g. DEBUG, TEMPLATE_DEBUG, DATABASES, etc.)
+# Production Settings - Settings that are specific to a production environment
+# (e.g. DEBUG, TEMPLATE_DEBUG, DATABASES, etc.)
 import os
 
 
@@ -8,7 +8,8 @@ DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 # The path to where we should put static files, it is recommended to have your
-# webserver serve static files. So this is often inside your webroot somewhere.
+# webserver serve static files.
+# This is often inside your webroot somewhere.
 STATIC_ROOT = '/path/to/my/webroot/static'
 
 # The URL relative to the webroot for the static files.
@@ -36,7 +37,8 @@ DATABASES = {
     }
 }
 
-# Haystack search settings, see http://django-haystack.readthedocs.org/en/latest/tutorial.html#modify-your-settings-py for help.
+# Haystack search settings, see documenation for help:
+# http://django-haystack.readthedocs.org/en/latest/tutorial.html#modify-your-settings-py
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': '',
@@ -44,23 +46,24 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
-# The broker URL to use for django celery.
-# See: http://docs.celeryproject.org/en/latest/getting-started/brokers/index.html
+# The broker URL to use for django celery. See for details this:
+# http://docs.celeryproject.org/en/latest/getting-started/brokers/index.html
 BROKER_URL = ''
 
 
-# The part below is for setting up sentry, it will automatically setup a handler for several 3rd party apps to
-# use the sentry handler instead.
+# The part below is for setting up sentry, it will automatically setup a
+# handler for several 3rd party apps to use the sentry handler instead.
 
 # See your friendly sentry control panel for help.
 # RAVEN_CONFIG = {
 #    'dsn': '',
 # }
 
-# The parts underneath are for extra Sentry setup, don't touch it, it won't run unless RAVEN_CONFIG is set.
+# The parts underneath are for extra Sentry setup, don't touch it,
+# it won't run unless RAVEN_CONFIG above is set.
 try:
     dsn = RAVEN_CONFIG['dsn']
-except:
+except NameError, KeyError:
     pass
 else:
     from custom_settings import INSTALLED_APPS
@@ -75,4 +78,3 @@ else:
 
     # Handler addition for thumbnail failures
     logging.getLogger('sorl.thumbnail').addHandler(handler)
-

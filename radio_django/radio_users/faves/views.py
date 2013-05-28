@@ -18,7 +18,6 @@ def faves_index(request, template="radio/faves/index.html",
                               context_instance=RequestContext(request))
 
 
-
 @page_template("radio/faves/list_page.html")
 def faves_list_user(request, user,
                     template="radio/faves/list.html",

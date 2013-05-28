@@ -1,6 +1,6 @@
 # Project Settings - Settings that don't exist in settings.py that you want to
-# add (e.g. USE_THOUSAND_SEPARATOR, GRAPPELLI_ADMIN_TITLE, CELERYBEAT_SCHEDULER,
-# CELERYD_PREFETCH_MULTIPLIER, etc.)
+# add (e.g. USE_THOUSAND_SEPARATOR, GRAPPELLI_ADMIN_TITLE,
+# CELERYBEAT_SCHEDULER, CELERYD_PREFETCH_MULTIPLIER, etc.)
 from settings import DEBUG
 
 #USE_THOUSAND_SEPARATOR = True
@@ -45,8 +45,10 @@ PIPELINE_JS_COMPRESSOR = None
 # We don't want any of the less-safe formats to be used.
 TASTYPIE_DEFAULT_FORMATS = ['json', 'xml', 'jsonp']
 
-import mutagen.flac, mutagen.mp3, mutagen.oggvorbis
-import datetime
+import mutagen.flac
+import mutagen.mp3
+import mutagen.oggvorbis
+
 SUBMISSION_MAX_SIZE_MAPPING = {
     mutagen.flac.FLAC: 7.34e+7,
     mutagen.mp3.MP3: 15728640,
@@ -57,6 +59,7 @@ SUBMISSION_MAX_SIZE_MAPPING = {
 # The amount of search results can't be edited right now
 RESULTS_PER_PAGE = 20
 
+import datetime
 # This is the time between track submissions,
 # if you want to change this add your own definition in local_settings.py
 SUBMISSION_DELAY = datetime.timedelta(hours=2)
@@ -74,9 +77,9 @@ HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 GRAPPELLI_ADMIN_TITLE = "R/a/dio admin panel"
 
 import os
-import sys
 
-if 'PRODUCTION' in os.environ and os.environ['PRODUCTION'].lower() in [True, 'y', 'yes', '1',]:
+if ('PRODUCTION' in os.environ and
+        os.environ['PRODUCTION'].lower() in [True, 'y', 'yes', '1']):
     from production_settings import *
 else:
     from local_settings import *

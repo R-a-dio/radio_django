@@ -36,7 +36,7 @@ signals.post_save.connect(reindex_related, sender=Albums)
 
 
 # These are the m2m relationship signals, these are.. more work
-def m2m_artist(sender, instance, action, **kwargs):
+def m2m_artist(sender, instance, action, reverse, **kwargs):
     if not action.startswith('post_'):
         return
 
@@ -48,6 +48,7 @@ def m2m_artist(sender, instance, action, **kwargs):
     else:
         # Artist side changed it. thus instance = Artists
         reindex_related(instance)
+
 
 def m2m_album(sender, instance, action, reverse, **kwargs):
     if not action.startswith('post_'):
@@ -61,6 +62,7 @@ def m2m_album(sender, instance, action, reverse, **kwargs):
     else:
         # Artist side changed it, thus instance = Albums
         reindex_related(instance)
+
 
 def m2m_track(sender, instance, action, reverse, **kwargs):
     if not action.startswith('post_'):

@@ -1,13 +1,15 @@
 from haystack.query import SearchQuerySet
-from radio_django.api import container
-from radio_collection.models import Tracks, Albums, Artists
-from radio_collection.search import RESULTS_PER_PAGE
 from django.conf.urls import url
 from django.http import Http404
 from django.core.paginator import Paginator, InvalidPage
 from tastypie.resources import ModelResource
 from tastypie.utils import trailing_slash
 from tastypie.fields import ForeignKey
+
+from radio_django.api import container
+from radio_collection.models import Tracks, Albums, Artists
+from radio_collection.search import RESULTS_PER_PAGE
+
 
 class ArtistResource(ModelResource):
     class Meta:
@@ -32,6 +34,7 @@ class TrackResource(ModelResource):
                         full=True, null=True, blank=True, full_list=True)
     album = ForeignKey(AlbumResource, 'album',
                        full=True, null=True, blank=True, full_list=True)
+
     class Meta:
         queryset = Tracks.objects.all().order_by('-id')
         resource_name = 'tracks'
@@ -41,7 +44,10 @@ class TrackResource(ModelResource):
 
     def prepend_urls(self):
         return [
-            url(r'^(?P<resource_name>%s)/search%s$' % (self._meta.resource_name, trailing_slash()),
+            url(r'^(?P<resource_name>%s)/search%s$' % (
+                self._meta.resource_name,
+                trailing_slash()
+                ),
                 self.wrap_view('get_search'),
                 name="api_track_search"),
         ]
@@ -51,7 +57,8 @@ class TrackResource(ModelResource):
         self.is_authenticated(request)
         self.throttle_check(request)
 
-        sqs = SearchQuerySet().models(Tracks).load_all().auto_query(request.GET.get('q', ''))
+        sqs = SearchQuerySet().models(Tracks).load_all()
+        sqs = sqs.auto_query(request.GET.get('q', ''))
         paginator = Paginator(sqs, RESULTS_PER_PAGE)
 
         try:
@@ -64,7 +71,9 @@ class TrackResource(ModelResource):
         objects = []
 
         for result in page.object_list:
-            if result is None: continue
+            if result is None:
+                continue
+
             bundle = self.build_bundle(obj=result.object, request=request)
             bundle = self.full_dehydrate(bundle)
             objects.append(bundle)

@@ -6,8 +6,8 @@ admin.autodiscover()
 from radio_django.api import container
 
 
-urlpatterns = patterns('',
-    # Examples:
+urlpatterns = patterns(
+    '',
     url(r'^$', 'radio_web.views.home', name='radio-home'),
     url(r'^irc/', 'radio_web.views.irc', name='radio-irc'),
     url(r'^news/', include('radio_news.urls')),
@@ -32,9 +32,13 @@ urlpatterns = patterns('',
 if settings.DEBUG:
     from django.conf.urls.static import static
 
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT
+    )
 
-# The following code creates our sitetree if it doesn't exist yet, we assume that our
-# main site tree will be called 'radio_tree'
+# The following code creates our sitetree if it doesn't exist yet,
+# we assume that our main site tree will be called 'radio_tree'
 
 from radio_django import radio_sitetree
+radio_sitetree

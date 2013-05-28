@@ -3,6 +3,7 @@ from django.conf import settings
 from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
 from django.http import Http404
+
 from radio_news.models import News
 
 
@@ -28,6 +29,7 @@ def index(request, page=1):
     return render(request, "news/index.html",
                   context_instance=context)
 
+
 def detail(request, news_obj):
     """
     Returns a single news post. Should also allow commenting if enabled.
@@ -44,6 +46,7 @@ def by_slug(request, slug):
     news_obj = get_object_or_404(News, slug__iexact=slug)
 
     return detail(request, news_obj)
+
 
 def by_id(request, news_id):
     news_obj = get_object_or_404(News, pk=news_id)

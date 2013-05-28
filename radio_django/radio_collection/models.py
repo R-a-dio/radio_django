@@ -30,8 +30,10 @@ class Collection(models.Model):
 
     track = models.OneToOneField('Tracks')
 
-    file = models.FileField(upload_to=generate_music_filename_field,
-                    help_text="Filename of the track in our system")
+    file = models.FileField(
+        upload_to=generate_music_filename_field,
+        help_text="Filename of the track in our system"
+    )
 
     original_filename = models.TextField(blank=True,
                                          help_text="Original filename.")
@@ -41,11 +43,17 @@ class Collection(models.Model):
 
     status = models.IntegerField(choices=STATUS_CHOICES)
 
-    uploader_comment = models.CharField(null=True, max_length=120,
-                                help_text="Comment given by the submitter.")
+    uploader_comment = models.CharField(
+        null=True,
+        max_length=120,
+        help_text="Comment given by the submitter."
+    )
 
-    decline_comment = models.CharField(null=True, max_length=120,
-                                help_text="Comment of why this was declined.")
+    decline_comment = models.CharField(
+        null=True,
+        max_length=120,
+        help_text="Comment of why this was declined."
+    )
 
     def __unicode__(self):
         return unicode(self.track)
@@ -98,8 +106,8 @@ class Tracks(models.Model):
 
     # Legacy fields underneath
     legacy_tags = models.TextField(
-                        help_text="Legacy tags that have not been split yet.",
-                    )
+        help_text="Legacy tags that have not been split yet.",
+    )
 
     @property
     def metadata(self):
@@ -156,8 +164,10 @@ class Played(models.Model):
     track = models.ForeignKey(Tracks, help_text="The track played.",
                               related_name="plays")
 
-    user = models.ForeignKey(User,
-                        help_text="The user responsible for this playback.")
+    user = models.ForeignKey(
+        User,
+        help_text="The user responsible for this playback."
+    )
 
     def __unicode__(self):
         return repr(self.time)
@@ -176,4 +186,3 @@ class Requests(models.Model):
 
     def __unicode__(self):
         return repr(self.time)
-

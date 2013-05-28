@@ -12,4 +12,3 @@ def retrieve_current_dj():
     if dj_id is None:
         return Djs.objects.get(name="None")
     return Djs.objects.get(pk=dj_id)
-

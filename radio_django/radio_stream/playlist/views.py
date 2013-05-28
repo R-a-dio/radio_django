@@ -7,8 +7,10 @@ from radio_stream.models import Played, Queue
 from radio_users.models import Djs
 from radio_users import retrieve_current_dj
 
+
 def playlist(request):
     return queue(request)
+
 
 def queue(request, user=None, page=1):
     if user is None:
@@ -17,7 +19,8 @@ def queue(request, user=None, page=1):
     if user is None:
         queryset = Queue.objects.none()
     else:
-        queryset = Queue.objects.all().filter(user=user).order_by("-time").select_related()
+        queryset = Queue.objects.all().filter(user=user)
+        queryset = queryset.order_by("-time").select_related()
 
     paginator = Paginator(queryset, settings.RESULTS_PER_PAGE)
 
@@ -35,7 +38,8 @@ def queue(request, user=None, page=1):
 
     return render(request, "queue/index.html",
                   context_instance=context)
-    
+
+
 def queue_by_name(request, user, page=1):
     user = get_object_or_404(Djs, name__iexact=user)
 
@@ -65,8 +69,8 @@ def played(request, user=None, page=1):
     return render(request, "lastplayed/index.html",
                   context_instance=context)
 
+
 def played_by_name(request, user, page=1):
     user = get_object_or_404(Djs, name=user)
 
     return played(request, user, page)
-
