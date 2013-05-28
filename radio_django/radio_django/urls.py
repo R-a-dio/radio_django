@@ -31,11 +31,14 @@ urlpatterns = patterns(
 
 if settings.DEBUG:
     from django.conf.urls.static import static
+    from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
     urlpatterns += static(
         settings.MEDIA_URL,
         document_root=settings.MEDIA_ROOT
     )
+
+    urlpatterns += staticfiles_urlpatterns()
 
 # The following code creates our sitetree if it doesn't exist yet,
 # we assume that our main site tree will be called 'radio_tree'
