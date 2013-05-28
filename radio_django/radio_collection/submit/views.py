@@ -53,10 +53,14 @@ class SubmissionForm(Form):
 
     replace = ReplacementChoices()
 
-    def __init__(self, request, **kwargs):
-        super(SubmissionForm, self).__init__(request.POST,
-                                             request.FILES,
-                                             **kwargs)
+    def __init__(self, request=None, **kwargs):
+        if request is not None:
+            super(SubmissionForm, self).__init__(request.POST,
+                                                 request.FILES,
+                                                 **kwargs)
+        else:
+            super(SubmissionForm, self).__init__(**kwargs)
+
         self.request = request
 
     def submission(self):
