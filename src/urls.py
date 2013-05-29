@@ -40,6 +40,8 @@ if settings.DEBUG:
 
     urlpatterns += staticfiles_urlpatterns()
 
+
+
 # The following code creates our sitetree if it doesn't exist yet,
 # we assume that our main site tree will be called 'radio_tree'
 

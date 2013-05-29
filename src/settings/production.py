@@ -1,11 +1,14 @@
+# We rarely ever want DEBUG enabled in production, so don't
+DEBUG = False
+TEMPLATE_DEBUG = DEBUG
+
+
+from .common import *
+
 # Production Settings - Settings that are specific to a production environment
 # (e.g. DEBUG, TEMPLATE_DEBUG, DATABASES, etc.)
 import os
 
-
-# We rarely ever want DEBUG enabled in production, so don't
-DEBUG = False
-TEMPLATE_DEBUG = DEBUG
 
 # The path to where we should put static files, it is recommended to have your
 # webserver serve static files.
