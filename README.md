@@ -31,6 +31,14 @@ Celery
 
 Celery requires a message broker to be installed. We suggest using RabbitMQ, instructions can be found at the [celery project documentation](http://docs.celeryproject.org/en/latest/getting-started/brokers/rabbitmq.html) Don't forget to set the `BROKER_URL` in `local_settings.py`.
 
+LESS
+----
+
+NOTE: For development this is not a requirement.
+
+We use LESS for our stylesheets, you need the LESS compiler for this to work correctly. Instructions can be found at the [less documentation](http://lesscss.org/#usage)(Scroll down to server side usage).
+
+
 Settings
 ========
 
