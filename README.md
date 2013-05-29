@@ -32,11 +32,11 @@ Celery
 Celery requires a message broker to be installed. We suggest using RabbitMQ, instructions can be found at the [celery project documentation](http://docs.celeryproject.org/en/latest/getting-started/brokers/rabbitmq.html) Don't forget to set the `BROKER_URL` in `local_settings.py`.
 
 Settings
---------
+========
 
-For development you will want to copy `radio_django/production_settings.py` to `radio_django/local_settings.py`. 
+A bare settings file can be found in `src/settings/local_example.py`. Make a copy of this file to something like `src/settings/development.py` or `src/settings/production.py`. Then set the `DJANGO_SETTINGS_MODULE` environment variable to the file you just created, if you named it `development.py` you do `export DJANGO_SETTINGS_MODULE=settings.development`. Replace `development` with what you named it.
 
-For production you will want to edit `radio_django/production_settings.py` and set the `PRODUCTION` environmental variable to `true`.
+Then open your new file and edit the settings to your liking. Before continueing.
 
 Database initializing
 ---------------------

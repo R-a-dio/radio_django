@@ -1,6 +1,10 @@
 *.log
 *.pot
-local_settings.py
+
+# Ignore settings files.
+settings/
+!settings/common.py
+!settings/local_example.py
 
 *.py[cod]
 
