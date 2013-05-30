@@ -155,7 +155,9 @@ PIPELINE_CSS = {
 PIPELINE_JS = {
     "radio_js": {
         'source_filenames': (
-            "js/bootstrap.js",
+            # We want to load all jquery first, with the main file first.
+            "js/jquery-2.0.1.js",
+            "js/lib/*.js",
             "js/custom/*.js",
         ),
         "output_filename": 'js/radio.js',

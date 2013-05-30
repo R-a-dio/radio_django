@@ -1,10 +1,14 @@
 *.log
 *.pot
 
-# Ignore settings files.
-settings/
-!settings/common.py
-!settings/local_example.py
+# Whitelist the example and common
+!src/settings/common.py
+!src/settings/local_example.py
+!src/settings/dev_example.py
+
+# Ignore all other settings
+src/settings/
+
 
 *.py[cod]
 
@@ -49,3 +53,5 @@ src/static/media/
 
 # Compiled LESS files
 src/static/less/default/*.css
+
+!src/static/js/lib/
