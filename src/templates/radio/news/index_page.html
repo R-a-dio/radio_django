@@ -1,0 +1,12 @@
+{% load endless %}
+
+{% paginate news_objects %}
+{% get_pages %}
+
+{% include "pagination.html" %}
+
+{% for entry in news_objects %}
+    {{ entry }}
+{% endfor %}
+
+{% include "pagination.html" %}
