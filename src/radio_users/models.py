@@ -41,6 +41,9 @@ class Djs(models.Model):
         return reverse('radio_users.staff.views.detail',
                        kwargs={'user': self.name.lower()})
 
+    def __unicode__(self):
+        return self.name
+
 
 class Nicknames(models.Model):
     """
@@ -75,6 +78,9 @@ class Names(models.Model):
 
     nickname = models.ForeignKey(Nicknames)
 
+    def __unicode__(self):
+        return self.name
+
 
 class Faves(models.Model):
     """
@@ -95,6 +101,9 @@ class Faves(models.Model):
     class Meta:
         verbose_name = 'favourite'
         unique_together = ('user', 'song')
+
+    def __unicode__(self):
+        return u"Fave {!r} of {:s}".format(self.song, self.user)
 
 
 class Uploads(models.Model):
@@ -120,3 +129,6 @@ class Uploads(models.Model):
         auto_now_add=True,
         help_text="The time this was uploaded."
     )
+
+    def __unicode__(self):
+        return self.upload

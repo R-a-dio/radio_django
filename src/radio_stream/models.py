@@ -19,7 +19,7 @@ class Songs(models.Model):
                                  null=True, blank=True)
 
     def __unicode__(self):
-        return self.hash
+        return self.metadata
 
     @staticmethod
     def create_hash(metadata):
@@ -37,6 +37,8 @@ class Played(models.Model):
     user = models.ForeignKey(Djs,
                              help_text="The user that played this on stream.")
 
+    def __unicode__(self):
+        return u"{!r} at {:s}".format(self.song, self.time)
 
 class Queue(models.Model):
     user = models.ForeignKey(Djs, help_text="The user this is queued for.")
@@ -45,3 +47,6 @@ class Queue(models.Model):
 
     time = models.DateTimeField(db_index=True,
                                 help_text="The estimated time of playing.")
+
+    def __unicode__(self):
+        return u"{:s} at {:s}".format(unicode(self.song), self.time)
