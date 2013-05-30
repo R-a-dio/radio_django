@@ -6,9 +6,9 @@
 {% get_pages %}
 
 {% if page|length %}
-    {% include "pagination.html" %}
+    {% include "pagination.html" with page_list="true" %}
 {% else %}
-    {% setter latest_additions as page %}
+   {% setter latest_additions as page %}
 {% endif %}
 
 <div id="search-head" class="row-fluid">
@@ -32,9 +32,9 @@
     </div>
 </div>
 
+
 <div class="row-fluid">
     <div id="search-results" class="span12">
-
         {% for result in page %}
         <div class="search-result-row" class="row-fluid">
             <div class="span1 search-result-id hidden-phone">
@@ -64,5 +64,5 @@
 </div>
 
 {% if page|length %}
-    {% include "pagination.html" %}
+    {% include "pagination.html" with page_list="true" %}
 {% endif %}

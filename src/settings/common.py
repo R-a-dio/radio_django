@@ -6,6 +6,7 @@ SECRET_KEY = '+4djssa@%hebp*h%cpy4f)wx_8eidfl7kuxc-gwql_0z)qo5hi'
 
 GRAPPELLI_ADMIN_TITLE = "R/a/dio admin panel"
 
+ENDLESS_PAGINATION_PER_PAGE = 30
 
 PROJECT_ROOT = path(__file__).abspath().dirname().dirname()
 
@@ -83,7 +84,6 @@ USE_L10N = True
 
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
-
 
 
 # List of finder classes that know how to find static files in
@@ -164,11 +164,13 @@ PIPELINE_JS = {
             # We want to load all jquery first, with the main file first.
             "js/jquery-2.0.1.js",
             "js/lib/*.js",
+            "endless_pagination/js/endless-pagination.js",
             "js/custom/*.js",
         ),
         "output_filename": 'js/radio.js',
     },
 }
+
 
 def enable_pipeline_debug():
     PIPELINE_JS['radio_js']['source_filenames'] += ("js/dev/less.min.js",)
